@@ -1,0 +1,31 @@
+<idea-plugin>
+    <id>com.husker.WebLaF Style Editor Plugin</id>
+    <name>WebLaF Style Editor</name>
+    <vendor email="redfancoestar@gmail.com">Husker</vendor>
+
+    <description>
+    It allows you to edit the xml style file, and immediately get a preview.
+    </description>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.java</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <iconProvider implementation="com.husker.weblafplugin.WebLaFIconProvider"/>
+        <fileEditorProvider implementation="com.husker.weblafplugin.editors.skin.SkinFileEditorProvider"/>
+    </extensions>
+
+    <actions>
+        <action id="weblaf.creation.skin" class="com.husker.weblafplugin.actions.NewSkinFileAction" text="WebLaF Skin" icon="MyFileIcons.DARK_SKIN">
+            <add-to-group group-id="NewGroup" anchor="last"/>
+        </action>
+        <action id="weblaf.creation.style" class="com.husker.weblafplugin.actions.NewStyleFileAction" text="WebLaF Style" icon="MyFileIcons.DARK_STYLE">
+            <add-to-group group-id="NewGroup" anchor="last"/>
+        </action>
+    </actions>
+    <actions>
+
+    </actions>
+
+
+</idea-plugin>
