@@ -4,7 +4,7 @@
     <vendor email="redfancoestar@gmail.com">Husker</vendor>
 
     <description>
-    It allows you to edit the xml style file, and immediately get a preview.
+    It allows you to edit the xml style/skin file, and immediately get a preview.
     </description>
 
     <depends>com.intellij.modules.platform</depends>
