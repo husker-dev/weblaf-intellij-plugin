@@ -27,8 +27,6 @@ public class SkinEditorUI extends JPanel {
     private Element skin_head;
     private VirtualFile file;
 
-    private String class_name = "";
-
     private Element old_file;
 
     private boolean isAfterEditorChangedEvent = false;
@@ -47,7 +45,7 @@ public class SkinEditorUI extends JPanel {
 
         // File editor changed listener
         Listeners.selectedFileEditorChanged(project, event -> {
-            if(event.getNewEditor().getClass() == SkinFileEditor.class){
+            if(event.getNewEditor() != null && event.getNewEditor().getClass() == SkinFileEditor.class){
                 try {
                     isAfterEditorChangedEvent = true;
                     updateSkinElement();
@@ -134,9 +132,6 @@ public class SkinEditorUI extends JPanel {
         return new File(path).getParent().replace("\\", "/");
     }
 
-    public void setClassName(String class_name){
-        this.class_name = class_name;
-    }
     public String getClassName(){
         return getSkinElement().getChildText("class", getSkinElement().getNamespace());
     }

@@ -7,9 +7,4 @@ public class Class extends SimpleXmlVariable {
     public Class(SkinEditorUI editor) {
         super(editor, "class");
     }
-
-    public void setValue(Object value) {
-        super.setValue(value);
-        getEditor().setClassName(value.toString());
-    }
 }
