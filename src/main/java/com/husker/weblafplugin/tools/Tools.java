@@ -8,6 +8,7 @@ import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -18,6 +19,7 @@ import com.intellij.psi.util.InheritanceUtil;
 import com.intellij.util.indexing.FileBasedIndex;
 
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -118,5 +120,17 @@ public class Tools {
                 ex.printStackTrace();
             }
         });
+    }
+
+    public static FileType getImageFileType(){
+        try {
+            FileType fileType = FileTypeManager.getInstance().getFileTypeByExtension("png");
+
+            return (FileType)fileType.getClass().getField("INSTANCE").get(fileType);
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return null;
+        }
+
     }
 }
