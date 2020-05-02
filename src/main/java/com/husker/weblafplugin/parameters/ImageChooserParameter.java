@@ -1,13 +1,10 @@
 package com.husker.weblafplugin.parameters;
 
 import com.husker.weblafplugin.tools.Tools;
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.fileTypes.FileTypeManager;
 
 public class ImageChooserParameter extends ResourceChooserParameter{
 
     public ImageChooserParameter(String name, int width) {
-
         super(name, Tools.getImageFileType(), width);
     }
 
