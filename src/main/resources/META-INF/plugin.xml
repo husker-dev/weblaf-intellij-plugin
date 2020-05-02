@@ -1,6 +1,6 @@
 <idea-plugin>
     <id>com.husker.weblaf.plugin</id>
-    <name>WebLaF Editor</name>
+    <name>WebLaF</name>
     <vendor email="redfancoestar@gmail.com">Husker</vendor>
 
     <description>
