@@ -4,7 +4,7 @@
     <vendor email="redfancoestar@gmail.com">Husker</vendor>
 
     <description>
-    Allows to edit the xml style/skin file, and immediately get a preview.
+        WebLaF support, such as file associations, icons and editors.
     </description>
 
     <depends>com.intellij.modules.platform</depends>
