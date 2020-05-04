@@ -8,9 +8,7 @@ import com.husker.weblafplugin.tools.XmlTools;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.VerticalFlowLayout;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiTypeElement;
+import com.intellij.psi.*;
 import com.intellij.psi.impl.source.PsiJavaCodeReferenceElementImpl;
 import com.intellij.psi.impl.source.tree.ChildRole;
 import com.intellij.psi.impl.source.tree.java.PsiClassObjectAccessExpressionImpl;
@@ -62,6 +60,8 @@ public class SkinEditorUI extends JPanel {
                 }
             }
         });
+
+
     }
 
     public Element getSkinElement(){
@@ -85,52 +85,35 @@ public class SkinEditorUI extends JPanel {
         old_file = skin_head;
     }
 
-    public PsiClass getPsiClassFromXmlSkin(PsiClass xmlSkin){
+    public String getResourcePath(){
         try {
-            PsiClass skinClass = xmlSkin;
+            PsiExpressionStatementImpl constructor = (PsiExpressionStatementImpl) getPsiClass().getConstructors()[0].getBody().getStatements()[0];
 
+            PsiMethodCallExpression super_call = (PsiMethodCallExpression)constructor.getExpression();
+            PsiNewExpression resource_instance = (PsiNewExpression)super_call.getArgumentList().getExpressions()[0];
 
+            String resource_class_name = resource_instance.getClassOrAnonymousClassReference().getQualifiedName();
 
-            PsiExpressionStatementImpl test = (PsiExpressionStatementImpl) skinClass.getConstructors()[0].getBody().getStatements()[0];
+            if(resource_class_name.equals("com.alee.api.resource.ClassResource")){
+                PsiClassObjectAccessExpressionImpl class_resource_class_expression = (PsiClassObjectAccessExpressionImpl)resource_instance.getArgumentList().getExpressions()[0];
 
-            // super(new ClassResource(TestSkinClass.class, ""))
-            PsiElement e1 = test.getChildren()[0];
+                PsiTypeElement class_resource_class_type = (PsiTypeElement) class_resource_class_expression.findChildByRole(ChildRole.TYPE);
+                PsiJavaCodeReferenceElementImpl class_resource_class_reference = (PsiJavaCodeReferenceElementImpl) class_resource_class_type.getChildren()[0];
 
-            // (new ClassResource(TestSkinClass.class, ""))
-            PsiElement e2 = e1.getChildren()[1];
+                PsiClass class_resource_class = Tools.getClassByPath(project, class_resource_class_reference.getCanonicalText());
 
-            // new ClassResource(TestSkinClass.class, "")
-            PsiElement e3 = e2.getChildren()[1];
-
-            // (TestSkinClass.class, "")
-            PsiElement e4 = e3.getChildren()[4];
-
-            // TestSkinClass.class
-            PsiClassObjectAccessExpressionImpl e5 = (PsiClassObjectAccessExpressionImpl) e4.getChildren()[1];
-
-            // TestSkinClass
-            PsiTypeElement e6 = (PsiTypeElement) e5.findChildByRole(ChildRole.TYPE);
-            PsiJavaCodeReferenceElementImpl classReference = (PsiJavaCodeReferenceElementImpl) e6.getChildren()[0];
-
-            //!!!
-            return Tools.getClassByPath(project, classReference.getCanonicalText());
+                String class_path = class_resource_class.getContainingFile().getVirtualFile().getPath();
+                return new File(class_path).getParent().replace("\\", "/");
+            }
+            return null;
         }catch (Exception ex){
+            ex.printStackTrace();
             return null;
         }
     }
 
     public PsiClass getPsiClass(){
         return Tools.getClassByPath(project, getClassName());
-    }
-
-    public String getResourcePath(){
-        PsiClass found_class = getPsiClassFromXmlSkin(getPsiClass());
-
-        if(found_class == null)
-            return null;
-
-        String path = found_class.getContainingFile().getVirtualFile().getPath();
-        return new File(path).getParent().replace("\\", "/");
     }
 
     public String getClassName(){

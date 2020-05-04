@@ -87,6 +87,8 @@ public class SkinEditor extends SkinEditorUI {
         ParameterManager.register(p_include, new Include(SkinEditor.this));
 
         p_id.addButtonListener(e -> p_id.setText(generateId()));
+
+        ParameterManager.reloadVariables(this);
     }
 
     public String generateId(){
