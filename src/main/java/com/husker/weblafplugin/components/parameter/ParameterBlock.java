@@ -3,6 +3,7 @@ package com.husker.weblafplugin.components.parameter;
 import com.intellij.openapi.ui.VerticalFlowLayout;
 import com.intellij.ui.SeparatorFactory;
 import com.intellij.ui.TitledSeparator;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -52,7 +53,7 @@ public class ParameterBlock extends JPanel {
         return content.add(comp, index);
     }
 
-    public void add(Component comp, Object constraints) {
+    public void add(@NotNull Component comp, Object constraints) {
         content.add(comp, constraints);
     }
 

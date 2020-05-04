@@ -48,7 +48,7 @@ public class Tools {
         return psi_classes.toArray(new PsiClass[0]);
     }
 
-    public static PsiClass[] getExtendedClasses(Project project, Class clazz){
+    public static PsiClass[] getExtendedClasses(Project project, Class<?> clazz){
         return getExtendedClasses(project, clazz.getName());
     }
 
@@ -68,8 +68,11 @@ public class Tools {
     }
 
     public static PsiClass getClassByPath(Project project, String clazz){
+        if(clazz == null)
+            return null;
+
         for(PsiClass psiClass : getClasses(project))
-            if(psiClass.getQualifiedName().equals(clazz))
+            if(clazz.equals(psiClass.getQualifiedName()))
                 return psiClass;
         return null;
     }
@@ -88,6 +91,9 @@ public class Tools {
     }
 
     public static void createAndOpen(AnActionEvent event, PsiFile file){
+        if(event.getProject() == null)
+            return;
+
         ApplicationManager.getApplication().runWriteAction(() -> {
             try {
                 // Create
@@ -123,14 +129,12 @@ public class Tools {
     }
 
     public static FileType getImageFileType(){
+        return FileTypeManager.getInstance().getFileTypeByExtension("png");
+    }
+
+    public static void waitForThread(Thread thread){
         try {
-            FileType fileType = FileTypeManager.getInstance().getFileTypeByExtension("png");
-
-            return (FileType)fileType.getClass().getField("INSTANCE").get(fileType);
-        }catch (Exception ex){
-            ex.printStackTrace();
-            return null;
-        }
-
+            thread.join();
+        }catch (Exception ignored){}
     }
 }

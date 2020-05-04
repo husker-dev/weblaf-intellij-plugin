@@ -1,5 +1,6 @@
 package com.husker.weblafplugin.actions;
 
+import com.alee.api.annotations.NotNull;
 import com.husker.weblafplugin.dialogs.SkinCreationDialog;
 import com.husker.weblafplugin.tools.Tools;
 import com.intellij.ide.highlighter.XmlFileType;
@@ -7,6 +8,8 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiFileFactory;
+
+import java.util.Objects;
 
 public class NewSkinFileAction extends AnAction {
 
@@ -25,8 +28,8 @@ public class NewSkinFileAction extends AnAction {
             "\n" +
             "</skin>";
 
-    public void actionPerformed(AnActionEvent e) {
-        SkinCreationDialog dialog = new SkinCreationDialog(e);
+    public void actionPerformed(@NotNull AnActionEvent event) {
+        SkinCreationDialog dialog = new SkinCreationDialog(event);
         dialog.show();
         if(dialog.isOK()){
 
@@ -36,8 +39,8 @@ public class NewSkinFileAction extends AnAction {
             text = text.replace("[title]", dialog.getTitle());
             text = text.replace("[author]", dialog.getAuthor());
 
-            PsiFile file = PsiFileFactory.getInstance(e.getProject()).createFileFromText(dialog.getFileName() + ".xml", XmlFileType.INSTANCE, text);
-            Tools.createAndOpen(e, file);
+            PsiFile file = PsiFileFactory.getInstance(Objects.requireNonNull(event.getProject())).createFileFromText(dialog.getFileName() + ".xml", XmlFileType.INSTANCE, text);
+            Tools.createAndOpen(event, file);
         }
     }
 

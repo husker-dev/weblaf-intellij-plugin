@@ -6,7 +6,6 @@ import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiFile;
 import com.intellij.ui.CollectionListModel;
 import com.intellij.ui.DoubleClickListener;
@@ -21,7 +20,7 @@ import java.util.ArrayList;
 public class FileListDialog extends DialogWrapper {
 
     private final JPanel component;
-    private final JBList fieldList;
+    private final JBList<PsiFile> fieldList;
 
     public FileListDialog(Project project, FileType fileType) {
         this(project, fileType, "");
@@ -33,17 +32,17 @@ public class FileListDialog extends DialogWrapper {
 
         VirtualFile[] files = Tools.getFilesByFileType(project, fileType);
 
-        ArrayList<PsiFile> psies = new ArrayList<>();
-        for(int i = 0; i < files.length; i++) {
-            if(contains == null)
+        ArrayList<PsiFile> psi_files = new ArrayList<>();
+        for (VirtualFile file : files) {
+            if (contains == null)
                 break;
 
-            if(files[i].getPath().contains(contains))
-                psies.add(Tools.getPsi(project, files[i]));
+            if (file.getPath().contains(contains))
+                psi_files.add(Tools.getPsi(project, file));
         }
 
-        CollectionListModel<PsiFile> classes = new CollectionListModel<>(psies);
-        fieldList = new JBList(classes);
+        CollectionListModel<PsiFile> classes = new CollectionListModel<>(psi_files);
+        fieldList = new JBList<>(classes);
         fieldList.setCellRenderer(new DefaultPsiElementCellRenderer());
         new DoubleClickListener(){
             protected boolean onDoubleClick(MouseEvent event) {
@@ -74,7 +73,7 @@ public class FileListDialog extends DialogWrapper {
     public PsiFile getPsiFile(){
         show();
         if(isOK() && fieldList.getSelectedValuesList().size() == 1)
-            return ((PsiFile)fieldList.getSelectedValue());
+            return fieldList.getSelectedValue();
         return null;
     }
 }

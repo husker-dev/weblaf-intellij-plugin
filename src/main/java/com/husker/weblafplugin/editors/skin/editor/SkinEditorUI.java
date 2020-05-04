@@ -16,7 +16,6 @@ import com.intellij.psi.impl.source.tree.ChildRole;
 import com.intellij.psi.impl.source.tree.java.PsiClassObjectAccessExpressionImpl;
 import com.intellij.psi.impl.source.tree.java.PsiExpressionStatementImpl;
 import org.jdom.Element;
-import org.jdom.output.XMLOutputter;
 
 import javax.swing.*;
 import java.io.File;
@@ -76,7 +75,7 @@ public class SkinEditorUI extends JPanel {
     public void updateSkinElement(){
         try {
             skin_head = XmlTools.getElement(Tools.getPsi(project, file).getText());
-        }catch (Exception ex){}
+        }catch (Exception ignored){}
     }
 
     public void setSkinElement(Element element){
@@ -89,6 +88,8 @@ public class SkinEditorUI extends JPanel {
     public PsiClass getPsiClassFromXmlSkin(PsiClass xmlSkin){
         try {
             PsiClass skinClass = xmlSkin;
+
+
 
             PsiExpressionStatementImpl test = (PsiExpressionStatementImpl) skinClass.getConstructors()[0].getBody().getStatements()[0];
 

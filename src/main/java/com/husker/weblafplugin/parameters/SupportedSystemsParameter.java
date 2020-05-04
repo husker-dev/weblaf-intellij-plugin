@@ -1,6 +1,5 @@
 package com.husker.weblafplugin.parameters;
 
-import com.google.common.collect.Lists;
 import com.husker.weblafplugin.variables.ValueChangedListener;
 import com.intellij.openapi.ui.VerticalFlowLayout;
 
@@ -28,7 +27,7 @@ public class SupportedSystemsParameter extends ComboBoxParameter{
 
         remove(comboBox);
 
-        super.addValueChangedListener(value -> content.setVisible(comboBox.getSelectedItem().equals(ITEM_CUSTOM)));
+        super.addValueChangedListener(value -> content.setVisible(ITEM_CUSTOM.equals(comboBox.getSelectedItem())));
 
         add(new JPanel(){{
             setLayout(new BorderLayout());
@@ -92,10 +91,10 @@ public class SupportedSystemsParameter extends ComboBoxParameter{
     protected String[] getValue(){
         ArrayList<String> out = new ArrayList<>();
 
-        if(comboBox.getSelectedItem().equals(ITEM_ALL))
+        if(ITEM_ALL.equals(comboBox.getSelectedItem()))
             out.add("all");
 
-        if(comboBox.getSelectedItem().equals(ITEM_CUSTOM)){
+        if(ITEM_CUSTOM.equals(comboBox.getSelectedItem())){
             for(JCheckBox checkBox : checkBoxes)
                 if(checkBox.isSelected())
                     Collections.addAll(out, os.get(checkBox.getText()));
@@ -105,7 +104,7 @@ public class SupportedSystemsParameter extends ComboBoxParameter{
     }
 
     public boolean haveErrors() {
-        if(comboBox.getSelectedItem().equals(ITEM_CUSTOM)) {
+        if(ITEM_CUSTOM.equals(comboBox.getSelectedItem())) {
             boolean isOk = false;
             for (JCheckBox checkBox : checkBoxes)
                 if (checkBox.isSelected())

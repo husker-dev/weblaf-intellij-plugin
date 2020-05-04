@@ -3,6 +3,7 @@ package com.husker.weblafplugin.components;
 import com.husker.weblafplugin.components.ResourcesList;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.ui.JBColor;
 import com.intellij.util.ui.UIUtil;
 
 import javax.swing.*;
@@ -57,7 +58,7 @@ public class ResourceElement extends JPanel {
                     break;
                 case UNSELECTED:
                     if(hasError) {
-                        setBackground(new Color(75, 45, 45));
+                        setBackground(new JBColor(new Color(75, 45, 45), new Color(75, 45, 45)));
                     }else
                         setBackground(UIUtil.getListBackground());
                     break;

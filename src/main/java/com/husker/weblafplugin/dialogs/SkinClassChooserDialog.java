@@ -8,6 +8,7 @@ import com.intellij.psi.PsiClass;
 import com.intellij.ui.*;
 import com.intellij.ui.components.JBList;
 
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -15,9 +16,9 @@ import java.awt.event.MouseEvent;
 public class SkinClassChooserDialog extends DialogWrapper {
 
     private final JPanel component;
-    private final JBList fieldList;
+    private final JBList<PsiClass> fieldList;
 
-    public SkinClassChooserDialog(Project project, Class clazz) {
+    public SkinClassChooserDialog(Project project, Class<?> clazz) {
         this(project, clazz.getName());
     }
 
@@ -26,7 +27,7 @@ public class SkinClassChooserDialog extends DialogWrapper {
         setTitle("Select Skin Class");
 
         CollectionListModel<PsiClass> classes = new CollectionListModel<>(Tools.getExtendedClasses(project, clazz));
-        fieldList = new JBList(classes);
+        fieldList = new JBList<>(classes);
         fieldList.setCellRenderer(new DefaultPsiElementCellRenderer());
         new DoubleClickListener(){
             protected boolean onDoubleClick(MouseEvent event) {
@@ -56,7 +57,7 @@ public class SkinClassChooserDialog extends DialogWrapper {
     public PsiClass getPsiClass(){
         show();
         if(isOK() && fieldList.getSelectedValuesList().size() == 1)
-            return ((PsiClass)fieldList.getSelectedValue());
+            return fieldList.getSelectedValue();
         return null;
     }
 

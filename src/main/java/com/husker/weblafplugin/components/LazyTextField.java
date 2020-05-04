@@ -2,6 +2,7 @@ package com.husker.weblafplugin.components;
 
 
 
+import com.husker.weblafplugin.tools.Tools;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.ui.components.JBTextField;
 
@@ -33,7 +34,7 @@ public class LazyTextField extends JBTextField {
 
                 if(last_thread != null && last_thread.isAlive()) {
                     last_thread.interrupt();
-                    while(last_thread.isAlive()){ }
+                    Tools.waitForThread(last_thread);
                 }
 
                 last_thread = new Thread(() -> {
@@ -47,7 +48,7 @@ public class LazyTextField extends JBTextField {
                                 listener.event(LazyTextField.this);
                         });
 
-                    } catch (Exception e) {
+                    } catch (Exception ignored) {
                     }
                 });
                 last_thread.start();

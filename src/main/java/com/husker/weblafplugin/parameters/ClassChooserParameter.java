@@ -6,7 +6,7 @@ import com.intellij.psi.PsiClass;
 
 public class ClassChooserParameter extends TextButtonParameter {
 
-    public ClassChooserParameter(String name, Class clazz, int width) {
+    public ClassChooserParameter(String name, Class<?> clazz, int width) {
         super(name, "...", width);
         addButtonListener(e -> {
             PsiClass psiClass = new SkinClassChooserDialog(getSkinEditor().getProject(), clazz).getPsiClass();
@@ -14,7 +14,7 @@ public class ClassChooserParameter extends TextButtonParameter {
                 setText(psiClass.getQualifiedName());
         });
     }
-    public ClassChooserParameter(String name, Class clazz) {
+    public ClassChooserParameter(String name, Class<?> clazz) {
         this(name, clazz, DEFAULT_WIDTH);
     }
 
