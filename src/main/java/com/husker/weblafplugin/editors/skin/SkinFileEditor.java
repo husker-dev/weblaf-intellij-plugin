@@ -17,9 +17,10 @@ import java.beans.PropertyChangeListener;
 public class SkinFileEditor implements FileEditor {
 
     private JBScrollPane panel;
+    private SkinEditor editor;
 
     public SkinFileEditor(Project project, VirtualFile file) {
-        panel = new JBScrollPane(new SkinEditor(project, file));
+        panel = new JBScrollPane(editor = new SkinEditor(project, file));
     }
 
     @NotNull
@@ -60,7 +61,7 @@ public class SkinFileEditor implements FileEditor {
     }
 
     public void dispose() {
-        System.out.println("dispose");
+        editor.dispose();
     }
 
     @Nullable

@@ -5,6 +5,7 @@ import com.husker.weblafplugin.components.parameter.ParameterManager;
 import com.husker.weblafplugin.tools.Listeners;
 import com.husker.weblafplugin.tools.Tools;
 import com.husker.weblafplugin.tools.XmlTools;
+import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.VerticalFlowLayout;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -17,6 +18,7 @@ import org.jdom.Element;
 
 import javax.swing.*;
 import java.io.File;
+import java.util.function.Consumer;
 
 public class SkinEditorUI extends JPanel {
 
@@ -25,6 +27,8 @@ public class SkinEditorUI extends JPanel {
     private VirtualFile file;
 
     private Element old_file;
+
+    private Consumer<FileEditorManagerEvent> selectedFileEditorChangedListener;
 
     private boolean isAfterEditorChangedEvent = false;
 
@@ -41,7 +45,7 @@ public class SkinEditorUI extends JPanel {
         });
 
         // File editor changed listener
-        Listeners.selectedFileEditorChanged(project, event -> {
+        selectedFileEditorChangedListener = event -> {
             if(event.getNewEditor() != null && event.getNewEditor().getClass() == SkinFileEditor.class){
                 try {
                     isAfterEditorChangedEvent = true;
@@ -59,8 +63,8 @@ public class SkinEditorUI extends JPanel {
                     // TODO Make error screen
                 }
             }
-        });
-
+        };
+        Listeners.selectedFileEditorChanged(project, selectedFileEditorChangedListener);
 
     }
 
@@ -118,6 +122,10 @@ public class SkinEditorUI extends JPanel {
 
     public String getClassName(){
         return getSkinElement().getChildText("class", getSkinElement().getNamespace());
+    }
+
+    public void dispose(){
+        ParameterManager.disposeContainer(this);
     }
 
 }

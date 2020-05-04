@@ -86,4 +86,11 @@ public class ParameterManager {
         reload_listeners.get(container).add(listener);
     }
 
+    public static void disposeContainer(Container container){
+        containers.remove(container);
+        reload_listeners.remove(container);
+        for(VariableApplier applier : getChildParameters(container))
+            variables.remove(applier);
+    }
+
 }
