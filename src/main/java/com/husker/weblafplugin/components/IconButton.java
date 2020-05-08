@@ -95,7 +95,6 @@ public class IconButton extends JComponent implements ActionButtonComponent {
     }
 
     public void updateUI(){
-        System.out.println("test");
         look = UIUtil.isUnderWin10LookAndFeel() ? new Win10ActionButtonLook() : new IdeaActionButtonLook();
     }
 
@@ -118,7 +117,7 @@ public class IconButton extends JComponent implements ActionButtonComponent {
 
     public Icon getDisabledIcon() {
         if(disabled_icon == null && getIcon() != null)
-            disabled_icon = getDarkerIcon(getIcon());
+            return getDarkerIcon(getIcon());
         return disabled_icon;
     }
 
@@ -139,9 +138,10 @@ public class IconButton extends JComponent implements ActionButtonComponent {
         for(int i = 0; i < wr.getWidth(); i++){
             for(int j = 0; j < wr.getHeight(); j++){
                 wr.getPixel(i, j, pixel);
-                pixel[0] = (int) (pixel[0] * 0.6f);
-                pixel[1] = (int) (pixel[1] * 0.6f);
-                pixel[2] = (int) (pixel[2] * 0.6f);
+                float percent = UIUtil.isUnderDarcula() ? 0.6f : 1.6f;
+                pixel[0] = (int) (pixel[0] * percent);
+                pixel[1] = (int) (pixel[1] * percent);
+                pixel[2] = (int) (pixel[2] * percent);
                 wr.setPixel(i, j, pixel);
             }
         }

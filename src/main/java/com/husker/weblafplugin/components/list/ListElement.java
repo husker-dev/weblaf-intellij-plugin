@@ -9,7 +9,7 @@ import com.intellij.util.ui.UIUtil;
 import javax.swing.*;
 import java.awt.*;
 
-import static com.husker.weblafplugin.components.list.List.ElementState.SELECTED_FOCUSED;
+import static com.husker.weblafplugin.components.list.List.ElementState.*;
 import static java.awt.FlowLayout.*;
 
 public abstract class ListElement<T> extends JPanel {
@@ -59,12 +59,18 @@ public abstract class ListElement<T> extends JPanel {
     }
 
     public Color getTextColor(){
+        if(getState() == SELECTED_FOCUSED)
+            return UIUtil.getTreeForeground(true, true);
+        if(getState() == SELECTED_UNFOCUSED)
+            return UIUtil.getTreeForeground(true, false);
+        if(getState() == UNSELECTED)
+            return UIUtil.getTreeForeground(false, false);
         return UIUtil.getActiveTextColor();
     }
 
     public Color getAlternativeTextColor(){
         if(getState() == SELECTED_FOCUSED)
-            return UIUtil.getActiveTextColor();
+            return getTextColor();
         else
             return UIUtil.getInactiveTextColor();
     }

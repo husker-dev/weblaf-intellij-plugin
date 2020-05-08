@@ -100,6 +100,8 @@ public class IncludeListElement extends ListElement<IncludeElement> {
     }
 
     public void updateColors(){
+        path.setForeground(getTextColor());
+
         passive_path.setForeground(getAlternativeTextColor());
         if(nearClass != null)
             nearClass.setForeground(getAlternativeTextColor());
@@ -119,9 +121,13 @@ public class IncludeListElement extends ListElement<IncludeElement> {
         includeElement.setResourcePath(resource_path);
     }
 
+    public IncludeElement getIncludeElement(){
+        return includeElement;
+    }
+
     public boolean equals(Object obj) {
-        if(obj instanceof IncludeElement)
-            return obj.equals(includeElement);
+        if(obj instanceof IncludeListElement)
+            return ((IncludeListElement)obj).getIncludeElement().equals(includeElement);
         else
             return false;
     }
