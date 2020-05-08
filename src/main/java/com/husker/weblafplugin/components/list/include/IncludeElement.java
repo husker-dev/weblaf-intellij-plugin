@@ -5,7 +5,6 @@ import org.jdom.Attribute;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
-import java.io.File;
 
 public class IncludeElement {
 

@@ -5,16 +5,12 @@ import com.husker.weblafplugin.components.list.ListElement;
 import com.husker.weblafplugin.components.list.include.IncludeElement;
 import com.husker.weblafplugin.components.parameter.Parameter;
 import com.husker.weblafplugin.components.list.include.IncludeList;
-import com.husker.weblafplugin.editors.skin.editor.SkinEditorUI;
 import com.husker.weblafplugin.variables.ValueChangedListener;
-import com.intellij.openapi.project.Project;
-import com.intellij.ui.components.JBScrollPane;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 public class IncludeListParameter extends Parameter {
 

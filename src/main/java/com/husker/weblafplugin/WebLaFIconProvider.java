@@ -2,8 +2,6 @@ package com.husker.weblafplugin;
 
 import com.husker.weblafplugin.tools.WebLaFTypeChecker;
 import com.intellij.ide.IconProvider;
-import com.intellij.ide.ui.EditorOptionsTopHitProvider;
-import com.intellij.idea.StartupUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.ui.StartupUiUtil;
