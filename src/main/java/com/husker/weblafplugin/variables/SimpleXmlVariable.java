@@ -23,7 +23,7 @@ public class SimpleXmlVariable extends XmlVariable {
                     setText(value.toString());
                 }});
         }
-        getEditor().setSkinElement(getElement());
+        saveElement();
     }
 
     public Object getValue() {

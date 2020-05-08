@@ -1,6 +1,7 @@
 package com.husker.weblafplugin.components.parameter;
 
 
+import com.husker.weblafplugin.components.VariableApplier;
 import com.husker.weblafplugin.variables.Variable;
 
 import java.awt.*;

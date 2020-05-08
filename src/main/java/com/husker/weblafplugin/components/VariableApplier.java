@@ -1,4 +1,4 @@
-package com.husker.weblafplugin.components.parameter;
+package com.husker.weblafplugin.components;
 
 import com.husker.weblafplugin.variables.ValueChangedListener;
 

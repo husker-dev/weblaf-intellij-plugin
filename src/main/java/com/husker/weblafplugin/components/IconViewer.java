@@ -1,6 +1,5 @@
 package com.husker.weblafplugin.components;
 
-import com.husker.weblafplugin.components.parameter.VariableApplier;
 import com.husker.weblafplugin.tools.SkinEditorManager;
 import com.husker.weblafplugin.tools.ComponentTools;
 import com.husker.weblafplugin.variables.ValueChangedListener;

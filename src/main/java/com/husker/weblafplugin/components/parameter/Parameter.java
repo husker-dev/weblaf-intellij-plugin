@@ -1,6 +1,7 @@
 package com.husker.weblafplugin.components.parameter;
 
 import com.husker.weblafplugin.components.SerialLayout;
+import com.husker.weblafplugin.components.VariableApplier;
 import com.husker.weblafplugin.editors.skin.editor.SkinEditorUI;
 import com.husker.weblafplugin.tools.SkinEditorManager;
 import com.intellij.ui.JBColor;

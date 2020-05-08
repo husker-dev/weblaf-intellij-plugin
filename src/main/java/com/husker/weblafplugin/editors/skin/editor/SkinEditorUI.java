@@ -1,11 +1,15 @@
 package com.husker.weblafplugin.editors.skin.editor;
 
+import com.husker.weblafplugin.components.list.include.IncludeListElement;
 import com.husker.weblafplugin.editors.skin.SkinFileEditor;
 import com.husker.weblafplugin.components.parameter.ParameterManager;
 import com.husker.weblafplugin.tools.Listeners;
 import com.husker.weblafplugin.tools.Tools;
 import com.husker.weblafplugin.tools.XmlTools;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.VerticalFlowLayout;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -15,8 +19,10 @@ import com.intellij.psi.impl.source.tree.ChildRole;
 import com.intellij.psi.impl.source.tree.java.PsiClassObjectAccessExpressionImpl;
 import com.intellij.psi.impl.source.tree.java.PsiExpressionStatementImpl;
 import org.jdom.Element;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.util.function.Consumer;
 
@@ -111,7 +117,6 @@ public class SkinEditorUI extends JPanel {
             }
             return null;
         }catch (Exception ex){
-            ex.printStackTrace();
             return null;
         }
     }

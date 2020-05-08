@@ -11,7 +11,6 @@ import com.husker.weblafplugin.parameters.*;
 import com.husker.weblafplugin.editors.skin.editor.variables.*;
 
 import com.husker.weblafplugin.editors.skin.editor.variables.Class;
-import com.intellij.ide.highlighter.XmlFileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.VerticalFlowLayout;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -37,7 +36,8 @@ public class SkinEditor extends SkinEditorUI {
     protected SupportedSystemsParameter p_supported_systems = new SupportedSystemsParameter("OS support");
 
     protected LabelParameter p_resources_path = new LabelParameter("Path");
-    protected ResourceListParameter p_include = new ResourceListParameter("Include", XmlFileType.INSTANCE);
+
+    protected IncludeListParameter p_include = new IncludeListParameter("Include");
 
     public SkinEditor(Project project, VirtualFile file) {
         super(project, file);

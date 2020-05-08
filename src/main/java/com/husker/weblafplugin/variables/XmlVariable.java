@@ -24,7 +24,11 @@ public abstract class XmlVariable extends Variable {
         return getElement().getNamespace();
     }
 
-    public SkinEditorUI getEditor(){
+    public SkinEditorUI getSkinEditor(){
         return editor;
+    }
+
+    public void saveElement(){
+        getSkinEditor().setSkinElement(getElement());
     }
 }

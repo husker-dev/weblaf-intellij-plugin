@@ -15,7 +15,7 @@
         <fileEditorProvider implementation="com.husker.weblafplugin.editors.skin.SkinFileEditorProvider"/>
     </extensions>
 
-    <idea-version since-build="193"/>
+    <idea-version since-build="193.1784"/>
 
     <actions>
         <action id="weblaf.creation.skin" class="com.husker.weblafplugin.actions.NewSkinFileAction" text="WebLaF Skin" icon="MyFileIcons.DARK_SKIN">

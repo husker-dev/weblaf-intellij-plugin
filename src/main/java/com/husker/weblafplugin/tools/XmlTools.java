@@ -131,6 +131,10 @@ public class XmlTools {
         if(!element1.getNamespace().equals(element2.getNamespace()))
             return false;
 
+        // Text
+        if(!element1.getText().equals(element2.getText()))
+            return false;
+
         // Attributes
         if(element1.getAttributes().size() != element2.getAttributes().size())
             return false;
