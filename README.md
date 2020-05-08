@@ -8,7 +8,7 @@ Added the ability to change ```Skin``` or ```Style``` parameters using the ```In
 
 You can check [official instruction](https://www.jetbrains.com/help/idea/managing-plugins.html) for more information
 
-* ### Using plugin browser (Temporarily not working)
+* ### Using plugin browser
   You can add a plugin to Intellij IDEA using the built-in plugin browser. 
 
   ```File -> Settings -> Plugins -> Search "WebLaF"```
