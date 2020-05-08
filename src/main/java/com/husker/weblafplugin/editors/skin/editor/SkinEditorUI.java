@@ -5,6 +5,7 @@ import com.husker.weblafplugin.components.parameter.ParameterManager;
 import com.husker.weblafplugin.tools.Listeners;
 import com.husker.weblafplugin.tools.Tools;
 import com.husker.weblafplugin.tools.XmlTools;
+import com.intellij.ide.ui.EditorOptionsTopHitProvider;
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.VerticalFlowLayout;
@@ -46,22 +47,26 @@ public class SkinEditorUI extends JPanel {
 
         // File editor changed listener
         selectedFileEditorChangedListener = event -> {
-            if(event.getNewEditor() != null && event.getNewEditor().getClass() == SkinFileEditor.class){
-                try {
-                    isAfterEditorChangedEvent = true;
-                    updateSkinElement();
+            try {
+                if (event.getNewEditor() != null && event.getNewEditor().getClass() == SkinFileEditor.class) {
+                    try {
+                        isAfterEditorChangedEvent = true;
+                        updateSkinElement();
 
-                    // If xml changed
-                    if(old_file == null || !XmlTools.areEqual(skin_head, old_file))
-                        ParameterManager.reloadVariables(this);
+                        // If xml changed
+                        if (old_file == null || !XmlTools.areEqual(skin_head, old_file))
+                            ParameterManager.reloadVariables(this);
 
-                    old_file = skin_head;
-                }catch (NullPointerException np){
-                    // Ignore
-                }catch (Exception ex){
-                    ex.printStackTrace();
-                    // TODO Make error screen
+                        old_file = skin_head;
+                    } catch (NullPointerException np) {
+                        // Ignore
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        // TODO Make error screen
+                    }
                 }
+            }catch (Exception ex){
+                ex.printStackTrace();
             }
         };
         Listeners.selectedFileEditorChanged(project, selectedFileEditorChangedListener);
@@ -79,7 +84,9 @@ public class SkinEditorUI extends JPanel {
     public void updateSkinElement(){
         try {
             skin_head = XmlTools.getElement(Tools.getPsi(project, file).getText());
-        }catch (Exception ignored){}
+        }catch (Exception ignored){
+            ignored.printStackTrace();
+        }
     }
 
     public void setSkinElement(Element element){

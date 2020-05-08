@@ -39,7 +39,10 @@ public class IncludeListParameter extends Parameter {
                 public void onReorder(int from, int to) {
                     ArrayList<IncludeElement> elements = new ArrayList<>(Arrays.asList(list.getContent()));
                     elements.remove(list.getContentAt(from));
-                    elements.add(to, list.getContentAt(from));
+                    if(from < to)
+                        elements.add(to - 1, list.getContentAt(from));
+                    else
+                        elements.add(to, list.getContentAt(from));
 
                     for(ValueChangedListener listener : listeners)
                         listener.changed(elements.toArray(new IncludeElement[0]));

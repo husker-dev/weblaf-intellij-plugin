@@ -131,4 +131,13 @@ public class IncludeListElement extends ListElement<IncludeElement> {
         else
             return false;
     }
+
+    public String toString() {
+        return "IncludeListElement{" +
+                "text=" + includeElement.getPath() +
+                ", hasError=" + hasError +
+                ", dropHovered=" + isDropHovered() +
+                ", dropSide=" + getDropSide() +
+                '}';
+    }
 }

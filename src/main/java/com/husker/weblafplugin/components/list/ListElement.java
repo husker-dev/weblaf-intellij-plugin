@@ -184,4 +184,12 @@ public abstract class ListElement<T> extends JPanel {
     public void setDropHovered(boolean dropHovered) {
         this.dropHovered = dropHovered;
     }
+
+    public String toString() {
+        return "ListElement{" +
+                "state=" + state +
+                ", dropHovered=" + dropHovered +
+                ", dropSide=" + dropSide +
+                '}';
+    }
 }

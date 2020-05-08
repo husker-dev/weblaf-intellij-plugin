@@ -65,12 +65,22 @@ public class List<T> extends JComponent {
             new DragSupport(element, object);
             new DropSupport(element, object.getClass()){{
                 addDropListener(transferred -> {
+                    System.out.println(element);
+                    int index = -1;
+                    if(element.getDropSide() == ListElement.DropSide.TOP)
+                        index = getElementIndex(element);
+                    if(element.getDropSide() == ListElement.DropSide.BOTTOM)
+                        index = getElementIndex(element) + 1;
+
+                    System.out.println(getElementIndex(element) + "  " + index);
+
                     dragging_element = null;
                     element.setDropHovered(false);
                     element.onDropMoving();
                     repaint();
+
                     for(ElementReorderedListener listener : listeners_reordered)
-                        listener.reordered(getContentIndex((T)transferred), getContentIndex(object));
+                        listener.reordered(getContentIndex((T)transferred), index);
                     dragEvent();
                 });
                 addMoveListener(() -> {
