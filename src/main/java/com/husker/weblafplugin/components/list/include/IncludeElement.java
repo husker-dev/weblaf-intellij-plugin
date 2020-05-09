@@ -1,15 +1,21 @@
 package com.husker.weblafplugin.components.list.include;
 
+import com.husker.weblafplugin.tools.XmlTools;
 import com.intellij.openapi.project.Project;
 import org.jdom.Attribute;
 import org.jdom.Element;
 import org.jdom.Namespace;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 
 public class IncludeElement {
 
     private String resource_path, passive_path, path, nearClass;
     private Project project;
+    private Element element;
 
     public IncludeElement(Project project, String resource_path, String path, String nearClass){
         this.resource_path = resource_path;
@@ -69,7 +75,28 @@ public class IncludeElement {
             return false;
     }
 
-    public Element getElement(Namespace namespace){
+    public String getFileText(){
+        try {
+            return String.join(System.lineSeparator(), Files.readAllLines(Paths.get(resource_path + "/" + path)).toArray(new String[0]));
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public Element getFileElement(){
+        if(element == null) {
+            try {
+                return XmlTools.getElement(getFileText());
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }else
+            return element;
+    }
+
+    public Element generateElement(Namespace namespace){
         return new Element("include", namespace){{
 
             if(getNearClass() != null)

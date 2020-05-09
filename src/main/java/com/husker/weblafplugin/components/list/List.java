@@ -5,9 +5,11 @@ import com.husker.weblafplugin.components.list.text.TextListElement;
 import com.husker.weblafplugin.tools.DragSupport;
 import com.husker.weblafplugin.tools.DropSupport;
 import com.intellij.openapi.ui.VerticalFlowLayout;
+import com.intellij.ui.AnActionButton;
 
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,17 +64,21 @@ public class List<T> extends JComponent {
         for(T object : content) {
             ListElement<T> element = generator.generateListElement(object);
 
-            new DragSupport(element, object);
+            new DragSupport(element, object){{
+                addDragSupportListener(() -> {
+                    dragging_element = element;
+                });
+            }};
             new DropSupport(element, object.getClass()){{
                 addDropListener(transferred -> {
-                    System.out.println(element);
+                    if(transferred == element)
+                        return;
+
                     int index = -1;
                     if(element.getDropSide() == ListElement.DropSide.TOP)
                         index = getElementIndex(element);
                     if(element.getDropSide() == ListElement.DropSide.BOTTOM)
                         index = getElementIndex(element) + 1;
-
-                    System.out.println(getElementIndex(element) + "  " + index);
 
                     dragging_element = null;
                     element.setDropHovered(false);
@@ -89,8 +95,6 @@ public class List<T> extends JComponent {
                     dragEvent();
                 });
                 addHoverListener(hovered -> {
-                    if(hovered)
-                        dragging_element = element;
                     element.setDropHovered(hovered);
                     element.onDropMoving();
                     repaint();
@@ -107,6 +111,8 @@ public class List<T> extends JComponent {
             elements.add(element);
             add(element);
         }
+
+        doLayout();
 
         if(selectedElement != null){
             boolean selected = false;
@@ -148,10 +154,13 @@ public class List<T> extends JComponent {
         if(selectedElement != null)
             selectedElement.setState(ElementState.UNSELECTED);
         selectedElement = element;
-        if(selectedElement != null)
+        if(selectedElement != null) {
             selectedElement.setState(ElementState.SELECTED_FOCUSED);
+            scrollRectToVisible(selectedElement.getBounds());
+        }
         for(ElementSelectedListener listener : listeners_selected)
             listener.selected(element);
+
     }
 
     public ListElement<T> getSelectedElement(){

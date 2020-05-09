@@ -108,21 +108,26 @@ public abstract class ListElement<T> extends JPanel {
 
     // DND = Drag And Drop
     public void drawDND(Graphics gr){
-        int size = 1;
-
-        gr.setColor(JBColor.red);
-        if(dropSide == DropSide.TOP)
-            gr.fillRect(0, 0, getWidth(), size);
-        if(dropSide == DropSide.BOTTOM)
-            gr.fillRect(0, getHeight() - 1, getWidth(), getHeight() - 1 - size);
+        if(getList().getDraggingElement() == this)
+            return;
 
         ListElement<T> next_element = getNextElement();
         ListElement<T> prev_element = getPrevElement();
+        boolean isNextDragging = next_element == getList().getDraggingElement();
+        boolean isPrevDragging = prev_element == getList().getDraggingElement();
 
-        if(next_element != null && next_element.getDropSide() == DropSide.TOP)
+        int size = 1;
+
+        gr.setColor(JBColor.red);
+        if(dropSide == DropSide.TOP && !isPrevDragging)
+            gr.fillRect(0, 0, getWidth(), size);
+        if(dropSide == DropSide.BOTTOM && !isNextDragging)
             gr.fillRect(0, getHeight() - 1, getWidth(), getHeight() - 1 - size);
 
-        if(prev_element != null && prev_element.getDropSide() == DropSide.BOTTOM)
+        if(next_element != null && !isNextDragging && next_element.getDropSide() == DropSide.TOP)
+            gr.fillRect(0, getHeight() - 1, getWidth(), getHeight() - 1 - size);
+
+        if(prev_element != null && !isPrevDragging && prev_element.getDropSide() == DropSide.BOTTOM)
             gr.fillRect(0, 0, getWidth(), size);
     }
 

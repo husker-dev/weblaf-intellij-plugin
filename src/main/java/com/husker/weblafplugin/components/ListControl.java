@@ -15,6 +15,7 @@ public class ListControl extends JPanel {
     private final List<?> list;
     private final JBScrollPane scroll;
     private IconButton add, remove, up, down;
+    private JPanel buttonPanel;
 
     private final ArrayList<ListControlListener> listeners = new ArrayList<>();
 
@@ -38,31 +39,35 @@ public class ListControl extends JPanel {
             }
         });
 
-        add(new JPanel(){{
+        add(buttonPanel = new JPanel(){{
             setLayout(new VerticalFlowLayout(0, 0));
 
             add(add = new IconButton(AllIcons.General.Add){{
+                setToolTipText("Add");
                 addActionListener(e -> {
                     for(ListControlListener listener : listeners)
                         listener.onAdd();
                 });
             }});
             add(remove = new IconButton(AllIcons.General.Remove){{
+                setToolTipText("Remove");
                 addActionListener(e -> {
                     for(ListControlListener listener : listeners)
                         listener.onRemove(list.getSelectedElement());
                 });
             }});
             add(up = new IconButton(AllIcons.General.ArrowUp){{
+                setToolTipText("Shift Up");
                 addActionListener(e -> {
                     for(ListControlListener listener : listeners)
                         listener.onReorder(list.getSelectedIndex(), list.getSelectedIndex() - 1);
                 });
             }});
             add(down = new IconButton(AllIcons.General.ArrowDown){{
+                setToolTipText("Shift Down");
                 addActionListener(e -> {
                     for(ListControlListener listener : listeners)
-                        listener.onReorder( list.getSelectedIndex(), list.getSelectedIndex() + 1);
+                        listener.onReorder(list.getSelectedIndex(), list.getSelectedIndex() + 2);
                 });
             }});
         }}, BorderLayout.EAST);
@@ -77,6 +82,10 @@ public class ListControl extends JPanel {
         remove.setEnabled(visible);
         up.setEnabled(list.getSelectedIndex() != 0 && visible);
         down.setEnabled(list.getSelectedIndex() != (list.getElementCount() - 1) && visible);
+    }
+
+    public void addButton(IconButton button){
+        buttonPanel.add(button);
     }
 
     public void addListControlListener(ListControlListener listener){

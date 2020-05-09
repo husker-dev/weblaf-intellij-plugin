@@ -1,16 +1,20 @@
 package com.husker.weblafplugin.parameters;
 
+import com.husker.weblafplugin.components.IconButton;
 import com.husker.weblafplugin.components.ListControl;
 import com.husker.weblafplugin.components.list.ListElement;
 import com.husker.weblafplugin.components.list.include.IncludeElement;
 import com.husker.weblafplugin.components.parameter.Parameter;
 import com.husker.weblafplugin.components.list.include.IncludeList;
+import com.husker.weblafplugin.tools.IncludeSorting;
 import com.husker.weblafplugin.variables.ValueChangedListener;
+import com.intellij.icons.AllIcons;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class IncludeListParameter extends Parameter {
 
@@ -25,6 +29,17 @@ public class IncludeListParameter extends Parameter {
         panel.setLayout(new BorderLayout(0, 0));
         panel.add(new ListControl(list = new IncludeList()){{
             setPreferredSize(new Dimension(470, 400));
+
+            addButton(new IconButton(AllIcons.ObjectBrowser.SortByType){{
+                setToolTipText("Sort");
+                addActionListener(e -> {
+                    ArrayList<IncludeElement> elements = new ArrayList<>(Arrays.asList(list.getContent()));
+                    elements = new ArrayList<>(new IncludeSorting().sort(elements));
+
+                    for(ValueChangedListener listener : listeners)
+                        listener.changed(elements.toArray(new IncludeElement[0]));
+                });
+            }});
             addListControlListener(new ListControlListener<IncludeElement>() {
                 public void onAdd() {
 
@@ -37,15 +52,17 @@ public class IncludeListParameter extends Parameter {
                         listener.changed(elements.toArray(new IncludeElement[0]));
                 }
                 public void onReorder(int from, int to) {
-                    ArrayList<IncludeElement> elements = new ArrayList<>(Arrays.asList(list.getContent()));
-                    elements.remove(list.getContentAt(from));
-                    if(from < to)
-                        elements.add(to - 1, list.getContentAt(from));
-                    else
-                        elements.add(to, list.getContentAt(from));
+                    try {
+                        ArrayList<IncludeElement> elements = new ArrayList<>(Arrays.asList(list.getContent()));
+                        IncludeElement buffer = new IncludeElement(null, "", "buffer.xml", "");
+                        elements.set(from, buffer);
 
-                    for(ValueChangedListener listener : listeners)
-                        listener.changed(elements.toArray(new IncludeElement[0]));
+                        elements.add(to, list.getContentAt(from));
+                        elements.remove(buffer);
+
+                        for (ValueChangedListener listener : listeners)
+                            listener.changed(elements.toArray(new IncludeElement[0]));
+                    }catch (Exception ex){}
                 }
             });
         }});

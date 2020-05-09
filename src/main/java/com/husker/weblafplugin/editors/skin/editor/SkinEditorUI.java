@@ -84,8 +84,8 @@ public class SkinEditorUI extends JPanel {
     public void updateSkinElement(){
         try {
             skin_head = XmlTools.getElement(Tools.getPsi(project, file).getText());
-        }catch (Exception ignored){
-            ignored.printStackTrace();
+        }catch (Exception ex){
+            ex.printStackTrace();
         }
     }
 

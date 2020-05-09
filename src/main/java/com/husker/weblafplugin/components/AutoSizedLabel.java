@@ -33,10 +33,14 @@ public class AutoSizedLabel extends JLabel {
     public void paintComponent(Graphics gr){
         super.paintComponent(gr);
 
-        if(needToResize) {
-            needToResize = false;
-            int text_width = SwingUtilities.computeStringWidth(getGraphics().getFontMetrics(), getText());
-            setPreferredSize(new Dimension(text_width, getPreferredSize().height));
+        try {
+            if (needToResize) {
+                needToResize = false;
+                int text_width = SwingUtilities.computeStringWidth(getGraphics().getFontMetrics(), getText());
+                setPreferredSize(new Dimension(text_width, getPreferredSize().height));
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
         }
     }
 

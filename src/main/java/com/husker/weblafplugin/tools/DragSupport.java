@@ -5,8 +5,11 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.*;
+import java.util.ArrayList;
 
 public class DragSupport {
+
+    private ArrayList<DragSupportListener> listeners = new ArrayList<>();
 
     public DragSupport(Component component, Object object){
         Transferable transferable = new Transferable() {
@@ -30,6 +33,18 @@ public class DragSupport {
             }
         };
 
-        DragSource.getDefaultDragSource().createDefaultDragGestureRecognizer(component, DnDConstants.ACTION_MOVE, drg -> drg.startDrag(null, transferable, null));
+        DragSource.getDefaultDragSource().createDefaultDragGestureRecognizer(component, DnDConstants.ACTION_MOVE, drg -> {
+            drg.startDrag(null, transferable, null);
+            for(DragSupportListener listener : listeners)
+                listener.started();
+        });
+    }
+
+    public void addDragSupportListener(DragSupportListener listener){
+        listeners.add(listener);
+    }
+
+    public interface DragSupportListener{
+        void started();
     }
 }
