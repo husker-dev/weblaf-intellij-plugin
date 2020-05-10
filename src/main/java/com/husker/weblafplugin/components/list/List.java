@@ -5,14 +5,13 @@ import com.husker.weblafplugin.components.list.text.TextListElement;
 import com.husker.weblafplugin.tools.DragSupport;
 import com.husker.weblafplugin.tools.DropSupport;
 import com.intellij.openapi.ui.VerticalFlowLayout;
-import com.intellij.ui.AnActionButton;
 
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class List<T> extends JComponent {
 
@@ -58,11 +57,19 @@ public class List<T> extends JComponent {
             return;
         this.content = content;
 
+        HashMap<T,  ListElement<T>> old_elements = new HashMap<>();
+        for(ListElement<T> element : elements)
+            old_elements.put(element.getContent(), element);
+
         removeAll();
         elements.clear();
 
         for(T object : content) {
-            ListElement<T> element = generator.generateListElement(object);
+            ListElement<T> element;
+            if(old_elements.containsKey(object))
+                element = old_elements.get(object);
+            else
+                element = generator.generateListElement(object);
 
             new DragSupport(element, object){{
                 addDragSupportListener(() -> {
