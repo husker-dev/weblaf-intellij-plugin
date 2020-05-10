@@ -66,55 +66,12 @@ public class List<T> extends JComponent {
 
         for(T object : content) {
             ListElement<T> element;
+
             if(old_elements.containsKey(object))
                 element = old_elements.get(object);
             else
                 element = generator.generateListElement(object);
 
-            new DragSupport(element, object){{
-                addDragSupportListener(() -> {
-                    dragging_element = element;
-                });
-            }};
-            new DropSupport(element, object.getClass()){{
-                addDropListener(transferred -> {
-                    if(transferred == element)
-                        return;
-
-                    int index = -1;
-                    if(element.getDropSide() == ListElement.DropSide.TOP)
-                        index = getElementIndex(element);
-                    if(element.getDropSide() == ListElement.DropSide.BOTTOM)
-                        index = getElementIndex(element) + 1;
-
-                    dragging_element = null;
-                    element.setDropHovered(false);
-                    element.onDropMoving();
-                    repaint();
-
-                    for(ElementReorderedListener listener : listeners_reordered)
-                        listener.reordered(getContentIndex((T)transferred), index);
-                    dragEvent();
-                });
-                addMoveListener(() -> {
-                    element.onDropMoving();
-                    repaint();
-                    dragEvent();
-                });
-                addHoverListener(hovered -> {
-                    element.setDropHovered(hovered);
-                    element.onDropMoving();
-                    repaint();
-                    dragEvent();
-                });
-            }};
-
-            element.addMouseListener(new MouseAdapter() {
-                public void mousePressed(MouseEvent mouseEvent) {
-                    setSelectedElement(element);
-                    grabFocus();
-                }
-            });
             elements.add(element);
             add(element);
         }
@@ -135,9 +92,13 @@ public class List<T> extends JComponent {
         }
     }
 
-    private void dragEvent(){
+    void dragEvent(){
         for(ListDragListener listener : listeners_dragging)
             listener.event();
+    }
+    void reorderEvent(int from, int to){
+        for(ElementReorderedListener listener : listeners_reordered)
+            listener.reordered(from, to);
     }
 
     public T[] getContent(){
@@ -205,6 +166,9 @@ public class List<T> extends JComponent {
 
     public ListElement<T> getDraggingElement(){
         return dragging_element;
+    }
+    public void setDraggingElement(ListElement<T> element){
+dragging_element = element;
     }
 
     public ListElement<T> getListElementAt(int index){

@@ -77,6 +77,10 @@ public class IncludeElement {
             return false;
     }
 
+    public int hashCode() {
+        return Objects.hash(resource_path, passive_path, path, nearClass, project, element);
+    }
+
     public String getFileText(){
         try {
             return String.join(System.lineSeparator(), Files.readAllLines(Paths.get(resource_path + "/" + path)).toArray(new String[0]));

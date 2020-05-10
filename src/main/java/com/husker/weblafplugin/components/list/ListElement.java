@@ -2,12 +2,16 @@ package com.husker.weblafplugin.components.list;
 
 
 
+import com.husker.weblafplugin.tools.DragSupport;
+import com.husker.weblafplugin.tools.DropSupport;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.ui.JBColor;
 import com.intellij.util.ui.UIUtil;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import static com.husker.weblafplugin.components.list.List.ElementState.*;
 import static java.awt.FlowLayout.*;
@@ -40,6 +44,48 @@ public abstract class ListElement<T> extends JPanel {
         add(right = new JPanel(){{
             setLayout(new FlowLayout(RIGHT, 0, 0));
         }}, BorderLayout.EAST);
+
+        new DragSupport(this, content){{
+            addDragSupportListener(() -> getList().setDraggingElement(ListElement.this));
+        }};
+        new DropSupport(this, content.getClass()){{
+            addDropListener(transferred -> {
+                if(transferred == this)
+                    return;
+
+                int index = -1;
+                if(getDropSide() == ListElement.DropSide.TOP)
+                    index = getList().getElementIndex(ListElement.this);
+                if(getDropSide() == ListElement.DropSide.BOTTOM)
+                    index = getList().getElementIndex(ListElement.this) + 1;
+
+                getList().setDraggingElement(null);
+                setDropHovered(false);
+                onDropEvent();
+                getList().repaint();
+
+                getList().dragEvent();
+                getList().reorderEvent(getList().getContentIndex((T)transferred), index);
+            });
+            addMoveListener(() -> {
+                onDropEvent();
+                getList().repaint();
+                getList().dragEvent();
+            });
+            addHoverListener(hovered -> {
+                setDropHovered(hovered);
+                onDropEvent();
+                getList().repaint();
+                getList().dragEvent();
+            });
+        }};
+
+        addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent mouseEvent) {
+                getList().setSelectedElement(ListElement.this);
+                getList().grabFocus();
+            }
+        });
     }
 
     public void addToLeft(Component component){
@@ -135,7 +181,7 @@ public abstract class ListElement<T> extends JPanel {
         return dropSide;
     }
 
-    public void onDropMoving(){
+    public void onDropEvent(){
         if(!isDropHovered()){
             dropSide = DropSide.NOTHING;
             return;
@@ -188,6 +234,13 @@ public abstract class ListElement<T> extends JPanel {
     }
     public void setDropHovered(boolean dropHovered) {
         this.dropHovered = dropHovered;
+    }
+
+    public boolean equals(Object obj) {
+        if(obj instanceof ListElement)
+            return ((ListElement)obj).getContent().equals(getContent());
+        else
+            return false;
     }
 
     public String toString() {

@@ -125,13 +125,6 @@ public class IncludeListElement extends ListElement<IncludeElement> {
         return includeElement;
     }
 
-    public boolean equals(Object obj) {
-        if(obj instanceof IncludeListElement)
-            return ((IncludeListElement)obj).getIncludeElement().equals(includeElement);
-        else
-            return false;
-    }
-
     public String toString() {
         return "IncludeListElement{" +
                 "text=" + includeElement.getPath() +
