@@ -9,6 +9,7 @@ import org.jdom.Namespace;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 
 public class IncludeElement {
@@ -66,11 +67,12 @@ public class IncludeElement {
     public boolean equals(Object obj) {
         if(obj instanceof IncludeElement){
             IncludeElement compare = (IncludeElement)obj;
-            return compare.getPath().equals(getPath()) &&
-                    (compare.getNearClass() == null && getNearClass() == null || compare.getNearClass().equals(getNearClass())) &&
-                    compare.getExtension().equals(getExtension()) &&
-                    compare.getPassivePath().equals(getPassivePath()) &&
-                    compare.getResourcePath().equals(getResourcePath());
+
+            return  Objects.equals(compare.getPath(), getPath()) &&
+                    Objects.equals(compare.getNearClass(), getNearClass()) &&
+                    Objects.equals(compare.getExtension(), getExtension()) &&
+                    Objects.equals(compare.getPassivePath(), getPassivePath()) &&
+                    Objects.equals(compare.getResourcePath(), getResourcePath());
         }else
             return false;
     }
