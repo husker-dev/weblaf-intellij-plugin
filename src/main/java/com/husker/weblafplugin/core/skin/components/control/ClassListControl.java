@@ -1,0 +1,26 @@
+package com.husker.weblafplugin.core.skin.components.control;
+
+import com.alee.managers.icon.set.IconSet;
+import com.husker.weblafplugin.core.components.control.DefaultListControl;
+import com.husker.weblafplugin.core.skin.components.list.classes.ClassList;
+import com.husker.weblafplugin.core.dialogs.ClassChooserDialog;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiClass;
+
+import java.awt.*;
+
+public class ClassListControl extends DefaultListControl<String> {
+
+    public ClassListControl(Project project, ClassList list) {
+        super(list, () -> {
+            PsiClass clazz = new ClassChooserDialog(project, "Select IconSet class", IconSet.class).getPsiClass();
+
+            if(clazz != null)
+                return clazz.getQualifiedName();
+            else
+                return null;
+        });
+
+        setPreferredSize(new Dimension(470, 100));
+    }
+}
