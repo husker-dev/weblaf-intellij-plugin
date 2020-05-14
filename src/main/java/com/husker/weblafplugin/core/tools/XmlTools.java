@@ -102,7 +102,7 @@ public class XmlTools {
     public static String formatElement(Element element){
         String skin_settings_group = "Skin settings";
         String skin_information_group = "Skin information";
-        String icon_set_group = "IconVariable sets";
+        String icon_set_group = "Icon sets";
         String include_group = "Styles placed in strict initialization order";
         String styles_group = "Styles";
 

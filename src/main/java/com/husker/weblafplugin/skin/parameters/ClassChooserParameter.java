@@ -4,9 +4,12 @@ import com.husker.weblafplugin.core.dialogs.ClassChooserDialog;
 import com.husker.weblafplugin.core.tools.Tools;
 import com.intellij.psi.PsiClass;
 
+import java.util.ArrayList;
+
 public class ClassChooserParameter extends TextButtonParameter {
 
     private Class<?> clazz;
+    private final ArrayList<String> blackList = new ArrayList<>();
 
     public ClassChooserParameter(String name, Class<?> clazz, int width) {
         super(name, "...", width);
@@ -20,7 +23,11 @@ public class ClassChooserParameter extends TextButtonParameter {
         super.onInit();
 
         addButtonListener(e -> {
-            PsiClass psiClass = new ClassChooserDialog(getSkinEditor().getProject(), "Select Skin Class", clazz).getPsiClass();
+            ClassChooserDialog dialog = new ClassChooserDialog(getSkinEditor().getProject(), "Select Skin Class", clazz);
+            for(String class_path : blackList)
+                dialog.addBlackListClass(class_path);
+
+            PsiClass psiClass = dialog.getPsiClass();
             if(psiClass != null)
                 setText(psiClass.getQualifiedName());
         });
@@ -32,6 +39,13 @@ public class ClassChooserParameter extends TextButtonParameter {
 
     public void addClassChooserListener(ClassChooserListener listener){
         addTextFieldListener(e -> listener.event(getText()));
+    }
+
+    public void addBlackListClass(Class<?> clazz){
+        addBlackListClass(clazz.getCanonicalName());
+    }
+    public void addBlackListClass(String class_path){
+        blackList.add(class_path);
     }
 
     public boolean haveErrors() {

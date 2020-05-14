@@ -36,11 +36,7 @@ public class Tools {
         return classes.toArray(new PsiClass[0]);
     }
 
-    public static PsiClass[] getExtendedClasses(Project project, Class<?> clazz){
-        return getExtendedClasses(project, clazz.getName());
-    }
-
-    public static void getExtendedClasses(Project project, String clazz, Consumer<PsiClass> consumer){
+    public static void getExtendedClassesInLibraries(Project project, String clazz, Consumer<PsiClass> consumer){
         AllClassesGetter.processJavaClasses(
                 new PlainPrefixMatcher(""),
                 project,
@@ -53,18 +49,28 @@ public class Tools {
         );
     }
 
-    public static PsiClass[] getExtendedClasses(Project project, String clazz){
-        ArrayList<PsiClass> classes = new ArrayList<>();
+    public static void getExtendedClassesInProject(Project project, String clazz, Consumer<PsiClass> consumer){
         AllClassesGetter.processJavaClasses(
                 new PlainPrefixMatcher(""),
                 project,
-                GlobalSearchScope.allScope(project),
-                (psiClass) -> {
+                GlobalSearchScope.projectScope(project),
+                psiClass -> {
                     if(InheritanceUtil.isInheritor(psiClass, clazz))
-                        classes.add(psiClass);
+                        consumer.accept(psiClass);
                     return true;
                 }
         );
+    }
+
+    public static PsiClass[] getExtendedClassesInLibraries(Project project, String clazz){
+        ArrayList<PsiClass> classes = new ArrayList<>();
+        getExtendedClassesInLibraries(project, clazz, classes::add);
+        return classes.toArray(new PsiClass[0]);
+    }
+
+    public static PsiClass[] getExtendedClassesInProject(Project project, String clazz){
+        ArrayList<PsiClass> classes = new ArrayList<>();
+        getExtendedClassesInProject(project, clazz, classes::add);
         return classes.toArray(new PsiClass[0]);
     }
 

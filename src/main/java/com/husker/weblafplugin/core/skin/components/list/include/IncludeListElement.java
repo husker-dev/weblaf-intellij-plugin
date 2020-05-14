@@ -1,6 +1,7 @@
 package com.husker.weblafplugin.core.skin.components.list.include;
 
 import com.husker.weblafplugin.core.components.AutoSizedLabel;
+import com.husker.weblafplugin.core.components.list.List;
 import com.husker.weblafplugin.core.components.list.files.AbstractFileListElement;
 import com.husker.weblafplugin.core.skin.IncludeElement;
 import com.husker.weblafplugin.core.tools.Tools;
@@ -14,15 +15,16 @@ import com.intellij.openapi.vfs.impl.local.LocalFileSystemImpl;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
+import com.intellij.ui.JBColor;
 import com.intellij.util.ui.UIUtil;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -80,18 +82,20 @@ public class IncludeListElement extends AbstractFileListElement<IncludeElement> 
         super.updateColors();
     }
 
+    public Color getBackgroundColor() {
+        if(getState() == List.ElementState.UNSELECTED && !hasError){
+
+            if((getContent().getResourcePath() + "/" + getContent().getPath()).contains(".jar!"))
+                return new JBColor(new Color(255, 255, 228), new Color(79, 75, 65));
+        }
+
+        return super.getBackgroundColor();
+    }
+
     public boolean testForExistence() {
         IncludeElement element = getContent();
 
-        String file_path;
-
-
-        if(element.getNearClass() == null || element.getNearClass().isEmpty())
-            file_path = element.getResourcePath() + "\\" + element.getPath();
-        else {
-            PsiClass clazz = Tools.getClassByPath(element.getProject(), element.getNearClass());
-            file_path = new File(clazz.getContainingFile().getVirtualFile().getPath()).getParent() + "\\" + element.getPath();
-        }
+        String file_path = element.getResourcePath() + "/" + element.getPath();
 
         file_path = file_path.replace("\\", "/");
 

@@ -1,10 +1,14 @@
 package com.husker.weblafplugin.core.skin;
 
+import com.husker.weblafplugin.core.tools.Tools;
+import com.intellij.ide.ui.EditorOptionsTopHitProvider;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiClass;
 import org.jdom.Attribute;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
@@ -12,7 +16,7 @@ import java.util.Objects;
 
 public class IncludeElement {
 
-    private String resource_path, passive_path, path, nearClass;
+    private String resource_path, passive_path, path, nearClass, nearClassPath;
     private Project project;
 
     public IncludeElement(Project project, String resource_path, String path, String nearClass){
@@ -20,9 +24,19 @@ public class IncludeElement {
         this.path = path;
         this.project = project;
         this.nearClass = nearClass;
+        try {
+            if (nearClass != null && !nearClass.equals("")) {
+                PsiClass clazz = Tools.getClassByPath(project, nearClass);
+                nearClassPath = new File(clazz.getContainingFile().getVirtualFile().getPath()).getParent();
+            }
+        }catch (Exception ex){
+            nearClassPath = "";
+        }
     }
 
     public String getResourcePath(){
+        if(nearClass != null && !nearClass.isEmpty())
+            return nearClassPath;
         return resource_path;
     }
     public void setResourcePath(String resource_path){

@@ -31,7 +31,9 @@ public class SkinEditor extends AbstractSkinEditor {
     protected ImageChooserParameter p_icon = new ImageChooserParameter("Icon", IMAGE_PARAMETER_SIZE);
     protected TextParameter p_description = new TextParameter("Description");
 
-    protected ClassChooserParameter p_class = new ClassChooserParameter("Class", XmlSkin.class);
+    protected ClassChooserParameter p_class = new ClassChooserParameter("Class", XmlSkin.class){{
+        addBlackListClass("com.alee.managers.style.XmlSkin");
+    }};
     protected TextButtonParameter p_id = new TextButtonParameter("Id", "Auto");
     protected SupportedSystemsParameter p_supported_systems = new SupportedSystemsParameter("OS support");
 

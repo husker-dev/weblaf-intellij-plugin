@@ -13,7 +13,10 @@ public class ClassListControl extends DefaultListControl<String> {
 
     public ClassListControl(Project project, ClassList list) {
         super(list, () -> {
-            PsiClass clazz = new ClassChooserDialog(project, "Select IconSet class", IconSet.class).getPsiClass();
+            ClassChooserDialog dialog = new ClassChooserDialog(project, "Select IconSet class", IconSet.class);
+            dialog.addBlackListClass("com.alee.managers.icon.set.RuntimeIconSet");
+
+            PsiClass clazz = dialog.getPsiClass();
 
             if(clazz != null)
                 return clazz.getQualifiedName();
