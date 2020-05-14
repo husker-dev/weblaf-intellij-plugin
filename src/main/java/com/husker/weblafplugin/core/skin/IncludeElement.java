@@ -1,7 +1,6 @@
 package com.husker.weblafplugin.core.skin;
 
 import com.husker.weblafplugin.core.tools.Tools;
-import com.intellij.ide.ui.EditorOptionsTopHitProvider;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import org.jdom.Attribute;
@@ -21,13 +20,13 @@ public class IncludeElement {
 
     public IncludeElement(Project project, String resource_path, String path, String nearClass){
         this.resource_path = resource_path;
-        this.path = path;
+        this.path = path.replace("\\", "/");
         this.project = project;
         this.nearClass = nearClass;
         try {
             if (nearClass != null && !nearClass.equals("")) {
                 PsiClass clazz = Tools.getClassByPath(project, nearClass);
-                nearClassPath = new File(clazz.getContainingFile().getVirtualFile().getPath()).getParent();
+                nearClassPath = new File(clazz.getContainingFile().getVirtualFile().getPath()).getParent().replace("\\", "/");
             }
         }catch (Exception ex){
             nearClassPath = "";
@@ -50,10 +49,10 @@ public class IncludeElement {
         this.project = project;
     }
 
-    public String getPath(){
+    public String getLocalPath(){
         return path;
     }
-    public void setPath(String path){
+    public void setLocalPath(String path){
         this.path = path;
     }
 
@@ -78,11 +77,15 @@ public class IncludeElement {
             return "";
     }
 
+    public String getFullPath(){
+        return getResourcePath() + "/" + getLocalPath();
+    }
+
     public boolean equals(Object obj) {
         if(obj instanceof IncludeElement){
             IncludeElement compare = (IncludeElement)obj;
 
-            return  Objects.equals(compare.getPath(), getPath()) &&
+            return  Objects.equals(compare.getLocalPath(), getLocalPath()) &&
                     Objects.equals(compare.getNearClass(), getNearClass()) &&
                     Objects.equals(compare.getExtension(), getExtension()) &&
                     Objects.equals(compare.getPassivePath(), getPassivePath()) &&
@@ -108,7 +111,7 @@ public class IncludeElement {
         return new Element("include", namespace){{
             if(getNearClass() != null)
                 setAttribute(new Attribute("nearClass", getNearClass()));
-            setText(getPath());
+            setText(getLocalPath());
         }};
     }
 }

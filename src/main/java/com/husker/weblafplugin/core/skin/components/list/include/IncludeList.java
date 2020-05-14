@@ -17,7 +17,7 @@ public class IncludeList extends AbstractFileList<IncludeElement> {
         if(content != null && content.length > 0) {
 
             // Folder path
-            ArrayList<String> folders = new ArrayList<>(Arrays.asList(content[0].getPath().split("/")));
+            ArrayList<String> folders = new ArrayList<>(Arrays.asList(content[0].getLocalPath().split("/")));
 
             // Remove file from path
             folders.remove(folders.size() - 1);
@@ -27,7 +27,7 @@ public class IncludeList extends AbstractFileList<IncludeElement> {
 
                 boolean hasSame = true;
                 for (IncludeElement element : content) {
-                    if (!element.getPath().startsWith(path)) {
+                    if (!element.getLocalPath().startsWith(path)) {
                         hasSame = false;
                         break;
                     }
