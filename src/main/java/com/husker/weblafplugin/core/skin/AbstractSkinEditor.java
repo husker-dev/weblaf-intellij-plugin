@@ -44,7 +44,7 @@ public abstract class AbstractSkinEditor extends JPanel {
         // TODO: move to plugin init action
         ApplicationManager.getApplication().runWriteAction(() -> {
             ExternalResourceManager.getInstance().addResource("http://weblookandfeel.com/XmlSkin", "validation/XmlSkin.xsd");
-            ExternalResourceManager.getInstance().addResource("http://weblookandfeel.com/XmlSkin", "validation/XmlSkinExtension.xsd");
+            ExternalResourceManager.getInstance().addResource("http://weblookandfeel.com/XmlSkinExtension", "validation/XmlSkinExtension.xsd");
         });
 
         ParameterManager.markAsParameterContainer(this);
