@@ -12,14 +12,14 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <iconProvider implementation="com.husker.weblafplugin.core.WebLaFIconProvider"/>
-        <fileEditorProvider implementation="com.husker.weblafplugin.core.skin.SkinFileEditorProvider"/>
+        <fileEditorProvider implementation="com.husker.weblafplugin.skin.core.SkinFileEditorProvider"/>
     </extensions>
 
     <idea-version since-build="193.1784"/>
 
     <actions>
 
-        <action id="weblaf.creation.skin" class="com.husker.weblafplugin.core.skin.actions.NewSkinFileAction" text="WebLaF Skin" icon="MyFileIcons.DARK_SKIN">
+        <action id="weblaf.creation.skin" class="com.husker.weblafplugin.skin.core.actions.NewSkinFileAction" text="WebLaF Skin" icon="MyFileIcons.DARK_SKIN">
             <add-to-group group-id="NewGroup" anchor="last"/>
         </action>
         <action id="weblaf.creation.style" class="com.husker.weblafplugin.style.actions.NewStyleFileAction" text="WebLaF Style" icon="MyFileIcons.DARK_STYLE">
