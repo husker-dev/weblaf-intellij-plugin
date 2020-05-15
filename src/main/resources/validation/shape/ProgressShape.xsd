@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+
+    <xs:include schemaLocation="AbstractProgressShape.xsd" />
+
+    <!-- com.alee.laf.progressbar.ProgressShape -->
+    <xs:complexType name="ProgressShape">
+        <xs:complexContent>
+            <xs:extension base="AbstractProgressShape" />
+        </xs:complexContent>
+    </xs:complexType>
+
+</xs:schema>

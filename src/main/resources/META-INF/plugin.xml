@@ -18,6 +18,7 @@
     <idea-version since-build="193.1784"/>
 
     <actions>
+
         <action id="weblaf.creation.skin" class="com.husker.weblafplugin.core.skin.actions.NewSkinFileAction" text="WebLaF Skin" icon="MyFileIcons.DARK_SKIN">
             <add-to-group group-id="NewGroup" anchor="last"/>
         </action>

@@ -5,6 +5,9 @@ import com.husker.weblafplugin.core.tools.Listeners;
 import com.husker.weblafplugin.core.skin.managers.SkinEditorManager;
 import com.husker.weblafplugin.core.tools.Tools;
 import com.husker.weblafplugin.core.tools.XmlTools;
+import com.intellij.javaee.ExternalResourceManager;
+import com.intellij.javaee.ExternalResourceManagerExImpl;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.VerticalFlowLayout;
@@ -37,6 +40,12 @@ public abstract class AbstractSkinEditor extends JPanel {
         this.project = project;
         this.file = file;
         setLayout(new VerticalFlowLayout());
+
+        // TODO: move to plugin init action
+        ApplicationManager.getApplication().runWriteAction(() -> {
+            ExternalResourceManager.getInstance().addResource("http://weblookandfeel.com/XmlSkin", "validation/XmlSkin.xsd");
+            ExternalResourceManager.getInstance().addResource("http://weblookandfeel.com/XmlSkin", "validation/XmlSkinExtension.xsd");
+        });
 
         ParameterManager.markAsParameterContainer(this);
 
