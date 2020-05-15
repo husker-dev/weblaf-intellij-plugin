@@ -11,9 +11,9 @@ public class SupportedSystemsParameter extends ComboBoxParameter {
 
     protected LinkedHashMap<String, String[]> os = new LinkedHashMap<String, String[]>(){{
         put("Windows", new String[]{"win"});
-        put("MAC", new String[]{"mac", "darwin"});
+        put("Mac OS", new String[]{"mac", "darwin"});
         put("Linux", new String[]{"nix", "nux"});
-        put("SOLARIS", new String[]{"sunos"});
+        put("Solaris", new String[]{"sunos"});
     }};
 
     protected static final String ITEM_ALL = "All";
