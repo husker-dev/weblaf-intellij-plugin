@@ -36,15 +36,28 @@ public class TransparentScrollPane extends JBScrollPane {
     private void init(){
         addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent e) {
-                JComponent component = (JComponent) getViewport().getView();
-                if(getVerticalScrollBar().isShowing())
-                    component.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, -14));
-                else
-                    component.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-
-                if(component instanceof ScrollFitApplier)
-                    ((ScrollFitApplier)component).fitContent(getVerticalScrollBar().isShowing());
+                updateContent();
+            }
+            public void componentMoved(ComponentEvent e) {
+                updateContent();
+            }
+            public void componentShown(ComponentEvent e) {
+                updateContent();
+            }
+            public void componentHidden(ComponentEvent e) {
+                updateContent();
             }
         });
+    }
+
+    private void updateContent(){
+        JComponent component = (JComponent) getViewport().getView();
+        if(getVerticalScrollBar().isShowing())
+            component.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, -14));
+        else
+            component.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+
+        if(component instanceof ScrollFitApplier)
+            ((ScrollFitApplier)component).fitContent(getVerticalScrollBar().isShowing());
     }
 }
