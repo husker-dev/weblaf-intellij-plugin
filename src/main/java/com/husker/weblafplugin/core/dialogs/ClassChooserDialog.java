@@ -3,10 +3,7 @@ package com.husker.weblafplugin.core.dialogs;
 import com.husker.weblafplugin.core.components.IconButton;
 import com.husker.weblafplugin.core.tools.Tools;
 import com.intellij.icons.AllIcons;
-import com.intellij.ide.ui.laf.darcula.ui.DarculaTextBorder;
-import com.intellij.ide.ui.laf.darcula.ui.DarculaTextFieldUI;
 import com.intellij.ide.util.DefaultPsiElementCellRenderer;
-import com.intellij.ide.util.gotoByName.ChooseByNameBase;
 import com.intellij.lang.jvm.JvmClassKind;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
@@ -17,7 +14,6 @@ import com.intellij.ui.*;
 import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBTabbedPane;
 import com.intellij.util.ui.AsyncProcessIcon;
-import com.intellij.util.ui.UIUtil;
 
 
 import javax.swing.*;
@@ -26,7 +22,6 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.function.Consumer;
 
 public class ClassChooserDialog extends DialogWrapper {
@@ -252,7 +247,6 @@ public class ClassChooserDialog extends DialogWrapper {
         public void setSearchActive(boolean active){
             loadingIcon.setVisible(active);
             reloadButton.setEnabled(!active);
-            searchField.setEnabled(!active);
             if(active)
                 loadingText.setText("Searching...");
             else

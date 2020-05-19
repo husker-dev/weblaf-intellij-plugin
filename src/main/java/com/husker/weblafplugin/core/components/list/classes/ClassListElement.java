@@ -55,10 +55,12 @@ public class ClassListElement extends AbstractFileListElement<String> {
 
     public Color getBackgroundColor() {
         if(getState() == List.ElementState.UNSELECTED && !hasError) {
-            PsiClass clazz = Tools.getClassByPath(project, getContent());
+            try {
+                PsiClass clazz = Tools.getClassByPath(project, getContent());
 
-            if (clazz.getContainingFile().getVirtualFile().getPath().contains(".jar!"))
-                return new JBColor(new Color(255, 255, 228), new Color(79, 75, 65));
+                if (clazz.getContainingFile().getVirtualFile().getPath().contains(".jar!"))
+                    return new JBColor(new Color(255, 255, 228), new Color(79, 75, 65));
+            }catch (Exception ex){}
         }
         return super.getBackgroundColor();
     }

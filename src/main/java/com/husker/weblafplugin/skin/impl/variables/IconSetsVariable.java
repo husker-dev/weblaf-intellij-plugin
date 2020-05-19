@@ -15,10 +15,12 @@ public class IconSetsVariable extends XmlVariable {
 
     public void setValue(Object object) {
         getElement().removeChildren("iconSet", getNamespace());
-        for(String element : (String[]) object)
-            getElement().addContent(new Element("iconSet", getNamespace()){{
-                setText(element);
-            }});
+        if(object != null) {
+            for (String element : (String[]) object)
+                getElement().addContent(new Element("iconSet", getNamespace()) {{
+                    setText(element);
+                }});
+        }
         saveElement();
     }
 
