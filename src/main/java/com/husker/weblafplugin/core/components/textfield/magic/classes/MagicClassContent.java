@@ -1,6 +1,6 @@
 package com.husker.weblafplugin.core.components.textfield.magic.classes;
 
-import com.husker.weblafplugin.core.components.textfield.magic.icon.IconMagicContent;
+import com.husker.weblafplugin.core.components.textfield.magic.icon.MagicIconContent;
 import com.husker.weblafplugin.core.tools.Tools;
 import com.intellij.ide.highlighter.JavaClassFileType;
 import com.intellij.openapi.project.Project;
@@ -9,12 +9,12 @@ import com.intellij.util.ui.UIUtil;
 
 import javax.swing.*;
 
-public class ClassMagicContent extends IconMagicContent {
+public class MagicClassContent extends MagicIconContent {
 
     private Project project;
     private JLabel name, path;
 
-    public ClassMagicContent(Project project){
+    public MagicClassContent(Project project){
         this.project = project;
         add(name = new JLabel(){{
             setForeground(UIUtil.getTextAreaForeground());

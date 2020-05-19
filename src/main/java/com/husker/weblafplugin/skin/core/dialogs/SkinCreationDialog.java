@@ -13,7 +13,6 @@ import java.awt.*;
 
 public class SkinCreationDialog extends DialogWrapper {
 
-    private AnActionEvent event;
     private Project project;
 
     private int text_width = 80;
@@ -31,13 +30,12 @@ public class SkinCreationDialog extends DialogWrapper {
     private JTextField author = new JTextField(System.getProperty("user.name"));
 
 
-    public SkinCreationDialog(AnActionEvent event) {
-        super(event.getProject());
+    public SkinCreationDialog(Project project) {
+        super(project);
         init();
         setTitle("New WebLaF Skin");
 
-        this.event = event;
-        this.project = event.getProject();
+        this.project = project;
     }
 
     protected JComponent createCenterPanel() {

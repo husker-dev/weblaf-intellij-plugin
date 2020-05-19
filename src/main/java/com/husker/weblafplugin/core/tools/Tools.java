@@ -47,7 +47,9 @@ public class Tools {
                 project,
                 GlobalSearchScope.allScope(project),
                 psiClass -> {
-                    if(InheritanceUtil.isInheritor(psiClass, clazz))
+                    if(clazz == null)
+                        consumer.accept(psiClass);
+                    else if(InheritanceUtil.isInheritor(psiClass, clazz))
                         consumer.accept(psiClass);
                     return true;
                 }
@@ -60,7 +62,9 @@ public class Tools {
                 project,
                 GlobalSearchScope.projectScope(project),
                 psiClass -> {
-                    if(InheritanceUtil.isInheritor(psiClass, clazz))
+                    if(clazz == null)
+                        consumer.accept(psiClass);
+                    else if(InheritanceUtil.isInheritor(psiClass, clazz))
                         consumer.accept(psiClass);
                     return true;
                 }
@@ -94,7 +98,7 @@ public class Tools {
         return FileBasedIndex.getInstance().getContainingFiles(
                 FileTypeIndex.NAME,
                 fileType,
-                GlobalSearchScope.projectScope(project)
+                GlobalSearchScope.allScope(project)
         ).toArray(new VirtualFile[0]);
     }
 

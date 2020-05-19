@@ -30,6 +30,10 @@ public class ClassChooserDialog extends DialogWrapper {
     private final ArrayList<String> blackList = new ArrayList<>();
     private JBTabbedPane tabbedPane;
 
+    public ClassChooserDialog(Project project, String title) {
+        this(project, title, (String) null);
+    }
+
     public ClassChooserDialog(Project project, String title, Class<?> clazz) {
         this(project, title, clazz.getName());
     }

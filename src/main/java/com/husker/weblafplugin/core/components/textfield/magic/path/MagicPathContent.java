@@ -1,23 +1,28 @@
 package com.husker.weblafplugin.core.components.textfield.magic.path;
 
-import com.husker.weblafplugin.core.components.textfield.magic.MagicContent;
-import com.husker.weblafplugin.core.components.textfield.magic.icon.IconMagicContent;
+import com.husker.weblafplugin.core.components.textfield.magic.icon.MagicIconContent;
 import com.husker.weblafplugin.core.tools.Tools;
-import com.intellij.icons.AllIcons;
 import com.intellij.ide.highlighter.JavaClassFileType;
 import com.intellij.openapi.fileTypes.FileTypeManager;
+import com.intellij.openapi.fileTypes.UnknownFileType;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiClass;
-import com.intellij.ui.IconManager;
+import com.intellij.psi.PsiFile;
 import com.intellij.util.ui.UIUtil;
 
 import javax.swing.*;
 
-public class PathMagicContent extends IconMagicContent {
+public class MagicPathContent extends MagicIconContent {
 
     private JLabel name, path;
+    private Project project;
 
-    {
+    public MagicPathContent(){
+        this(null);
+    }
+    public MagicPathContent(Project project){
+        this.project = project;
+
         add(name = new JLabel(){{
             setForeground(UIUtil.getTextAreaForeground());
         }});
@@ -30,7 +35,15 @@ public class PathMagicContent extends IconMagicContent {
         try{
             text = text.replace("\\", "/");
 
-            setIcon(FileTypeManager.getInstance().getFileTypeByFileName(text).getIcon());
+            VirtualFile file = Tools.getVirtualFile(text);
+            if(file != null && project != null) {
+                PsiFile psiFile = Tools.getPsi(project, file);
+                if(psiFile != null)
+                    setIcon(psiFile.getIcon(0));
+                else
+                    setDefaultIcon(text);
+            }else
+                setDefaultIcon(text);
 
             String name_text;
             String path_text;
@@ -46,7 +59,11 @@ public class PathMagicContent extends IconMagicContent {
             path.setText(path_text);
         }catch (Exception ex){
             ex.printStackTrace();
-            setIcon(JavaClassFileType.INSTANCE.getIcon());
+            setIcon(UnknownFileType.INSTANCE.getIcon());
         }
+    }
+
+    private void setDefaultIcon(String path){
+        setIcon(FileTypeManager.getInstance().getFileTypeByFileName(path).getIcon());
     }
 }

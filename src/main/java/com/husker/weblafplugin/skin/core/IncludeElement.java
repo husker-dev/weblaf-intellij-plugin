@@ -15,7 +15,7 @@ import java.util.Objects;
 
 public class IncludeElement {
 
-    private String resource_path, passive_path, path, nearClass, nearClassPath;
+    private String resource_path, path, nearClass, nearClassPath;
     private Project project;
 
     public IncludeElement(Project project, String resource_path, String path, String nearClass){
@@ -64,6 +64,8 @@ public class IncludeElement {
     }
 
     public String getPassivePath() {
+        if(getLocalPath().isEmpty() || !getLocalPath().contains("/"))
+            return "";
         return getLocalPath().substring(0, getLocalPath().lastIndexOf("/")) + "/";
     }
 
@@ -92,7 +94,7 @@ public class IncludeElement {
     }
 
     public int hashCode() {
-        return Objects.hash(resource_path, passive_path, path, nearClass, project);
+        return Objects.hash(resource_path, path, nearClass, project);
     }
 
     public String getFileText(){

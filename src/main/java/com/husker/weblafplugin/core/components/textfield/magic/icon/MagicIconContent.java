@@ -5,7 +5,7 @@ import com.husker.weblafplugin.core.components.textfield.magic.MagicContent;
 import javax.swing.*;
 import java.awt.*;
 
-public abstract class IconMagicContent extends MagicContent {
+public abstract class MagicIconContent extends MagicContent {
 
     private JLabel icon;
 

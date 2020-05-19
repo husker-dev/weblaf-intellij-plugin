@@ -1,12 +1,10 @@
 package com.husker.weblafplugin.skin.core.parameters;
 
-import com.husker.weblafplugin.core.components.textfield.magic.MagicContent;
-import com.husker.weblafplugin.core.components.textfield.magic.classes.ClassMagicContent;
+import com.husker.weblafplugin.core.components.textfield.magic.classes.MagicClassContent;
 import com.husker.weblafplugin.core.dialogs.ClassChooserDialog;
 import com.husker.weblafplugin.core.tools.Tools;
 import com.intellij.psi.PsiClass;
 
-import javax.swing.*;
 import java.util.ArrayList;
 
 public class ClassChooserParameter extends TextButtonParameter {
@@ -25,7 +23,7 @@ public class ClassChooserParameter extends TextButtonParameter {
     public void onInit(){
         super.onInit();
 
-        textField.setMagicPanel(new ClassMagicContent(getSkinEditor().getProject()));
+        textField.setMagicPanel(new MagicClassContent(getSkinEditor().getProject()));
 
         addButtonListener(e -> {
             ClassChooserDialog dialog = new ClassChooserDialog(getSkinEditor().getProject(), "Select Skin Class", clazz);

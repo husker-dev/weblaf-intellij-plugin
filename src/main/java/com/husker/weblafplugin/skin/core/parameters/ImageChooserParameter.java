@@ -1,6 +1,6 @@
 package com.husker.weblafplugin.skin.core.parameters;
 
-import com.husker.weblafplugin.core.components.textfield.magic.path.PathMagicContent;
+import com.husker.weblafplugin.core.components.textfield.magic.path.MagicPathContent;
 import com.husker.weblafplugin.core.tools.Tools;
 
 public class ImageChooserParameter extends ResourceChooserParameter {
@@ -12,7 +12,7 @@ public class ImageChooserParameter extends ResourceChooserParameter {
     public void onInit() {
         super.onInit();
 
-        textField.setMagicPanel(new PathMagicContent());
+        textField.setMagicPanel(new MagicPathContent(getSkinEditor().getProject()));
     }
 
     public ImageChooserParameter(String name) {

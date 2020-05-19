@@ -29,7 +29,7 @@ public class NewSkinFileAction extends AnAction {
             "</skin>";
 
     public void actionPerformed(@NotNull AnActionEvent event) {
-        SkinCreationDialog dialog = new SkinCreationDialog(event);
+        SkinCreationDialog dialog = new SkinCreationDialog(event.getProject());
         dialog.show();
         if(dialog.isOK()){
 
