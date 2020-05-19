@@ -3,6 +3,7 @@ package com.husker.weblafplugin.core.components.textfield.magic.path;
 import com.husker.weblafplugin.core.components.textfield.magic.MagicContent;
 import com.husker.weblafplugin.core.components.textfield.magic.icon.IconMagicContent;
 import com.husker.weblafplugin.core.tools.Tools;
+import com.intellij.icons.AllIcons;
 import com.intellij.ide.highlighter.JavaClassFileType;
 import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.vfs.VirtualFile;

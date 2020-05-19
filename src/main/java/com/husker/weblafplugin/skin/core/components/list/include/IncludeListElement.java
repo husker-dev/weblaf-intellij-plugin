@@ -51,7 +51,7 @@ public class IncludeListElement extends AbstractFileListElement<IncludeElement> 
         // nearClass
         if(element.getNearClass() != null) {
             addToRight(nearClass = new JLabel(element.getNearClass()) {{
-                setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
+                setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 5));
                 setForeground(UIUtil.getInactiveTextColor());
                 setVerticalTextPosition(CENTER);
             }});

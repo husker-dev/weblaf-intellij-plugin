@@ -16,8 +16,13 @@ import com.intellij.psi.*;
 import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.InheritanceUtil;
+import com.intellij.ui.ScrollPaneFactory;
+import com.intellij.ui.components.JBScrollPane;
 import com.intellij.util.indexing.FileBasedIndex;
 
+import javax.swing.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -156,5 +161,20 @@ public class Tools {
         try {
             thread.join();
         }catch (Exception ignored){}
+    }
+
+    public static JBScrollPane createScrollPane(JComponent component){
+        JBScrollPane scroll = (JBScrollPane) ScrollPaneFactory.createScrollPane(component, true);
+
+        scroll.addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent e) {
+                JComponent component = (JComponent) scroll.getViewport().getView();
+                if(scroll.getVerticalScrollBar().isShowing())
+                    component.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, -14));
+                else
+                    component.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+            }
+        });
+        return scroll;
     }
 }

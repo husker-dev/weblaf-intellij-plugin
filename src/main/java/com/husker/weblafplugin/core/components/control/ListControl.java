@@ -3,9 +3,10 @@ package com.husker.weblafplugin.core.components.control;
 import com.husker.weblafplugin.core.components.IconButton;
 import com.husker.weblafplugin.core.components.list.List;
 import com.husker.weblafplugin.core.components.list.ListElement;
+import com.husker.weblafplugin.core.components.scroll.TransparentScrollPane;
+import com.husker.weblafplugin.core.tools.Tools;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.ui.VerticalFlowLayout;
-import com.intellij.ui.components.JBScrollPane;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 public class ListControl<T> extends JPanel {
 
     private final List<T> list;
-    private final JBScrollPane scroll;
+    private final TransparentScrollPane scroll;
     private IconButton add, remove, up, down;
     private JPanel buttonPanel;
 
@@ -22,10 +23,10 @@ public class ListControl<T> extends JPanel {
 
     public ListControl(List<T> list){
         setLayout(new BorderLayout());
-
         this.list = list;
-        add(scroll = new JBScrollPane(this.list));
-        scroll.setAutoscrolls(true);
+
+        scroll = new TransparentScrollPane(this.list);
+        add(scroll);
 
         list.addElementReorderedListener((from, to) -> {
             for(ListControlListener<T> listener : listeners)
@@ -58,14 +59,14 @@ public class ListControl<T> extends JPanel {
                 });
             }});
             add(up = new IconButton(AllIcons.General.ArrowUp){{
-                setToolTipText("Shift Up");
+                setToolTipText("Move Up");
                 addActionListener(e -> {
                     for(ListControlListener<T> listener : listeners)
                         listener.onReorder(list.getSelectedIndex(), list.getSelectedIndex() - 1);
                 });
             }});
             add(down = new IconButton(AllIcons.General.ArrowDown){{
-                setToolTipText("Shift Down");
+                setToolTipText("Move Down");
                 addActionListener(e -> {
                     for(ListControlListener<T> listener : listeners)
                         listener.onReorder(list.getSelectedIndex(), list.getSelectedIndex() + 2);

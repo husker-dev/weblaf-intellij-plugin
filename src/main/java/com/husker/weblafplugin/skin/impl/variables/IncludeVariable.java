@@ -15,6 +15,8 @@ public class IncludeVariable extends XmlVariable {
     }
 
     public void setValue(Object object) {
+        if(object == null)
+            return;
         getElement().removeChildren("include", getNamespace());
         for(IncludeElement element : (IncludeElement[]) object)
             getElement().addContent(element.generateElement(getNamespace()));

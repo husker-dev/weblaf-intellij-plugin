@@ -2,6 +2,7 @@ package com.husker.weblafplugin.core.components.list;
 
 
 
+import com.husker.weblafplugin.core.components.scroll.ScrollFitApplier;
 import com.husker.weblafplugin.core.tools.DragSupport;
 import com.husker.weblafplugin.core.tools.DropSupport;
 import com.intellij.openapi.application.ApplicationManager;
@@ -16,7 +17,7 @@ import java.awt.event.MouseEvent;
 import static com.husker.weblafplugin.core.components.list.List.ElementState.*;
 import static java.awt.FlowLayout.*;
 
-public abstract class ListElement<T> extends JPanel {
+public abstract class ListElement<T> extends JPanel implements ScrollFitApplier {
 
     public enum DropSide{
         TOP,
@@ -234,6 +235,10 @@ public abstract class ListElement<T> extends JPanel {
     }
     public void setDropHovered(boolean dropHovered) {
         this.dropHovered = dropHovered;
+    }
+
+    public void fitContent(boolean barVisible) {
+        right.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, barVisible ? 10 : 0));
     }
 
     public boolean equals(Object obj) {

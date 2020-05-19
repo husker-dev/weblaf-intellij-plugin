@@ -2,6 +2,7 @@ package com.husker.weblafplugin.core.components.list;
 
 
 import com.husker.weblafplugin.core.components.list.text.TextListElement;
+import com.husker.weblafplugin.core.components.scroll.ScrollFitApplier;
 import com.intellij.openapi.ui.VerticalFlowLayout;
 
 
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class List<T> extends JComponent {
+public class List<T> extends JComponent implements ScrollFitApplier {
 
     public enum ElementState{
         SELECTED_UNFOCUSED,
@@ -171,5 +172,10 @@ public class List<T> extends JComponent {
 
     public ListElement<T> getListElementAt(int index){
         return (ListElement<T>)getComponent(index);
+    }
+
+    public void fitContent(boolean barVisible) {
+        for(ListElement<T> element : elements)
+            element.fitContent(barVisible);
     }
 }

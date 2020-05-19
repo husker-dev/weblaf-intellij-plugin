@@ -1,32 +1,38 @@
 package com.husker.weblafplugin.core.dialogs;
 
+import com.husker.weblafplugin.core.components.IconButton;
 import com.husker.weblafplugin.core.tools.Tools;
+import com.intellij.icons.AllIcons;
+import com.intellij.ide.ui.laf.darcula.ui.DarculaTextBorder;
+import com.intellij.ide.ui.laf.darcula.ui.DarculaTextFieldUI;
 import com.intellij.ide.util.DefaultPsiElementCellRenderer;
+import com.intellij.ide.util.gotoByName.ChooseByNameBase;
 import com.intellij.lang.jvm.JvmClassKind;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.progress.StandardProgressIndicator;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.ui.LoadingDecorator;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.util.PsiUtil;
 import com.intellij.ui.*;
 import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBTabbedPane;
+import com.intellij.util.ui.AsyncProcessIcon;
+import com.intellij.util.ui.UIUtil;
 
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.function.Consumer;
 
 public class ClassChooserDialog extends DialogWrapper {
 
     private final JPanel component;
-    private ListPage page_project, page_all;
     private final ArrayList<String> blackList = new ArrayList<>();
-    private Project project;
-    private String clazz;
     private JBTabbedPane tabbedPane;
 
     public ClassChooserDialog(Project project, String title, Class<?> clazz) {
@@ -35,30 +41,52 @@ public class ClassChooserDialog extends DialogWrapper {
 
     public ClassChooserDialog(Project project, String title, String clazz) {
         super(project);
-        this.project = project;
-        this.clazz = clazz;
 
         setTitle(title);
 
         component = new JPanel(){{
             setLayout(new BorderLayout());
             add(tabbedPane = new JBTabbedPane(){{
-                addTab("Project", page_project = new ListPage());
-                addTab("All", page_all = new ListPage());
                 addChangeListener(changeEvent -> {
-                    if(getSelectedComponent() == page_project && !page_project.loaded)
-                        loadProjectTab();
-                    if(getSelectedComponent() == page_all && !page_all.loaded)
-                        loadAllTab();
+                    if(getSelectedComponent() instanceof ClassListPage){
+                        ClassListPage page = (ClassListPage)getSelectedComponent();
+                        page.tryToLoad();
+                    }
                 });
             }});
         }};
-
         component.setPreferredSize(new Dimension(450, 250));
 
-        loadProjectTab();
+        // Init tabs
+        addPage(new ClassListPage("Project", page -> {
+            final ArrayList<PsiClass> found = new ArrayList<>();
+            Tools.getExtendedClassesInProject(project, clazz, psiClass -> {
+                if(psiClass.getClassKind().equals(JvmClassKind.CLASS) && !PsiUtil.isAbstractClass(psiClass) && !blackList.contains(psiClass.getQualifiedName())){
+                    found.add(psiClass);
+                    page.setListData(found.toArray(new PsiClass[0]));
+                }
+            });
+        }));
+        addPage(new ClassListPage("All", page -> {
+            final ArrayList<PsiClass> found = new ArrayList<>();
+            Tools.getExtendedClassesInLibraries(project, clazz, psiClass -> {
+                if(psiClass.getClassKind().equals(JvmClassKind.CLASS) && !PsiUtil.isAbstractClass(psiClass) && !blackList.contains(psiClass.getQualifiedName())){
+                    found.add(psiClass);
+                    page.setListData(found.toArray(new PsiClass[0]));
+                }
+            });
+        }));
+
+
         init();
     }
+
+    private void addPage(ClassListPage page){
+        tabbedPane.addTab(page.getTitle(), page);
+        if(tabbedPane.getTabCount() == 1)
+            page.tryToLoad();
+    }
+
     public void addBlackListClass(Class<?> clazz){
         addBlackListClass(clazz.getCanonicalName());
     }
@@ -73,53 +101,37 @@ public class ClassChooserDialog extends DialogWrapper {
     public PsiClass getPsiClass(){
         show();
         if(isOK()){
-            if(tabbedPane.getSelectedComponent() == page_project)
-                return page_project.list.getSelectedValue();
-            if(tabbedPane.getSelectedComponent() == page_all)
-                return page_all.list.getSelectedValue();
+            if(tabbedPane.getSelectedComponent() instanceof ClassListPage) {
+                ClassListPage page = (ClassListPage) tabbedPane.getSelectedComponent();
+                return page.getPsiClass();
+            }
         }
         return null;
     }
 
-    void loadProjectTab(){
-        page_project.loaded = true;
+    private class ClassListPage extends JPanel{
 
-        final ArrayList<PsiClass> found = new ArrayList<>();
-        ApplicationManager.getApplication().executeOnPooledThread(() -> {
-            ApplicationManager.getApplication().runReadAction(() -> {
-                Tools.getExtendedClassesInProject(project, clazz, psiClass -> {
-                    if(psiClass.getClassKind().equals(JvmClassKind.CLASS) && !PsiUtil.isAbstractClass(psiClass) && !blackList.contains(psiClass.getQualifiedName())){
-                        found.add(psiClass);
-                        page_project.list.setListData(found.toArray(new PsiClass[0]));
-                    }
-                });
-            });
-        });
-    }
+        private JBList<PsiClass> list;
+        private PsiClass[] content;
 
-    void loadAllTab(){
-        page_all.loaded = true;
+        private AsyncProcessIcon loadingIcon;
+        private JLabel loadingText;
+        private IconButton reloadButton;
+        private JTextField searchField;
 
-        final ArrayList<PsiClass> found = new ArrayList<>();
-        ApplicationManager.getApplication().executeOnPooledThread(() -> {
-            ApplicationManager.getApplication().runReadAction(() -> {
-                Tools.getExtendedClassesInLibraries(project, clazz, psiClass -> {
-                    if(psiClass.getClassKind().equals(JvmClassKind.CLASS) && !PsiUtil.isAbstractClass(psiClass) && !blackList.contains(psiClass.getQualifiedName())){
-                        found.add(psiClass);
-                        page_all.list.setListData(found.toArray(new PsiClass[0]));
-                    }
-                });
-            });
-        });
-    }
+        private String searchText = "";
 
-    private class ListPage extends JPanel{
+        private String title;
+        private boolean loaded = false;
 
-        public JBList<PsiClass> list;
-        public boolean loaded = false;
+        private Consumer<ClassListPage> onLoad;
 
-        public ListPage(){
+        public ClassListPage(String title, Consumer<ClassListPage> onLoad){
+            setBackground(Color.GREEN);
+            this.onLoad = onLoad;
+            this.title = title;
             setLayout(new BorderLayout());
+            setBorder(BorderFactory.createEmptyBorder(-5, -8, -5, -9));
 
             CollectionListModel<PsiClass> classes = new CollectionListModel<>();
             list = new JBList<>(classes);
@@ -141,10 +153,110 @@ public class ClassChooserDialog extends DialogWrapper {
             decorator.disableUpDownActions();
 
             add(decorator.createPanel());
+            add(new JPanel(){{
+                setPreferredSize(new Dimension(100, 61));
+                setLayout(new BorderLayout());
+                add(new JPanel(){{
+                    setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 0));
+                    setBorder(BorderFactory.createEmptyBorder(7, 0, 0, 0));
+                    add(loadingIcon = new AsyncProcessIcon("class_searching"));
+                    add(loadingText = new JLabel("Searching..."));
+                }}, BorderLayout.EAST);
+                add(new JPanel(){{
+                    setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+                    setBorder(BorderFactory.createEmptyBorder(3, 0, 0, 0));
+                    add(reloadButton = new IconButton(AllIcons.Javaee.UpdateRunningApplication){{
+                        addActionListener(e -> reload());
+                    }});
+                }}, BorderLayout.WEST);
+                add(new JPanel(){{
+                    setLayout(new BorderLayout());
+                    setBorder(BorderFactory.createEmptyBorder(0, 0, 3, 0));
+                    add(searchField = new JTextField(){{
+                        putClientProperty("JTextField.variant", "search");
+                        getDocument().addDocumentListener(new DocumentListener() {
+                            public void changedUpdate(DocumentEvent e) {
+                                event();
+                            }
+                            public void removeUpdate(DocumentEvent e) {
+                                event();
+                            }
+                            public void insertUpdate(DocumentEvent e) {
+                                event();
+                            }
+                            public void event() {
+                                searchText = getText();
+                                updateSearch();
+                            }
+                        });
+                    }});
+                }}, BorderLayout.SOUTH);
+            }}, BorderLayout.NORTH);
+        }
+
+        public String getTitle(){
+            return title;
+        }
+
+        public void tryToLoad(){
+            if(isLoaded())
+                return;
+            setLoaded(true);
+            reload();
+        }
+
+        private void reload(){
+            list.setListData(new PsiClass[0]);
+            ApplicationManager.getApplication().executeOnPooledThread(() -> {
+                ApplicationManager.getApplication().runReadAction(() -> {
+                    setSearchActive(true);
+                    onLoad.accept(this);
+                    setSearchActive(false);
+                });
+            });
+        }
+
+        public PsiClass getPsiClass(){
+            return list.getSelectedValue();
         }
 
         public void setListData(PsiClass[] data){
-            list.setListData(data);
+            content = data;
+            updateSearch();
+        }
+
+        public JBList<PsiClass> getList(){
+            return list;
+        }
+
+        public void setLoaded(boolean loaded){
+            this.loaded = loaded;
+        }
+
+        public boolean isLoaded(){
+            return loaded;
+        }
+
+        private void updateSearch(){
+            if(searchText.isEmpty())
+                list.setListData(content);
+            else{
+                ArrayList<PsiClass> found = new ArrayList<>();
+                for(PsiClass clazz : content)
+                    if (clazz.getQualifiedName().toLowerCase().contains(searchText.toLowerCase().trim()))
+                        found.add(clazz);
+                list.setListData(found.toArray(new PsiClass[0]));
+            }
+        }
+
+        public void setSearchActive(boolean active){
+            loadingIcon.setVisible(active);
+            reloadButton.setEnabled(!active);
+            searchField.setEnabled(!active);
+            if(active)
+                loadingText.setText("Searching...");
+            else
+                loadingText.setText(list.getItemsCount() + " classes found");
         }
     }
 

@@ -13,36 +13,6 @@ public class IncludeList extends AbstractFileList<IncludeElement> {
         setListElementGenerator(IncludeListElement::new);
     }
 
-    public void setContent(IncludeElement[] content) {
-        if(content != null && content.length > 0) {
-
-            // Folder path
-            ArrayList<String> folders = new ArrayList<>(Arrays.asList(content[0].getLocalPath().split("/")));
-
-            // Remove file from path
-            folders.remove(folders.size() - 1);
-
-            for (int i = 0; i < folders.size(); i++) {
-                String path = String.join("/", folders) + "/";
-
-                boolean hasSame = true;
-                for (IncludeElement element : content) {
-                    if (!element.getLocalPath().startsWith(path)) {
-                        hasSame = false;
-                        break;
-                    }
-                }
-                if (hasSame) {
-                    for (IncludeElement element : content)
-                        element.setPassivePath(path);
-                    break;
-                }
-            }
-        }
-
-        super.setContent(content);
-    }
-
     public void setResourcePath(String resource_path){
         for(Component component : getComponents()) {
             if (component instanceof IncludeListElement) {

@@ -64,10 +64,7 @@ public class IncludeElement {
     }
 
     public String getPassivePath() {
-        return passive_path == null ? "" : passive_path;
-    }
-    public void setPassivePath(String passive_path) {
-        this.passive_path = passive_path;
+        return getLocalPath().substring(0, getLocalPath().lastIndexOf("/")) + "/";
     }
 
     public String getExtension(){
