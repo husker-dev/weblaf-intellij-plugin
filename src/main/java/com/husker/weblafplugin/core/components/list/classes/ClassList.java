@@ -1,12 +1,12 @@
 package com.husker.weblafplugin.core.components.list.classes;
 
-import com.husker.weblafplugin.core.components.list.DefaultList;
+import com.husker.weblafplugin.core.components.list.FileList;
 import com.husker.weblafplugin.core.tools.Tools;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 
 
-public class ClassList extends DefaultList<String> {
+public class ClassList extends FileList<String> {
 
     private Project project;
 

@@ -1,12 +1,12 @@
 package com.husker.weblafplugin.skin.core.components.list;
 
-import com.husker.weblafplugin.core.components.list.DefaultList;
+import com.husker.weblafplugin.core.components.list.FileList;
 import com.husker.weblafplugin.skin.core.IncludeElement;
 import com.husker.weblafplugin.skin.core.SkinEditor;
 
 import javax.swing.*;
 
-public class IncludeList extends DefaultList<IncludeElement> {
+public class IncludeList extends FileList<IncludeElement> {
 
     private final SkinEditor editor;
 

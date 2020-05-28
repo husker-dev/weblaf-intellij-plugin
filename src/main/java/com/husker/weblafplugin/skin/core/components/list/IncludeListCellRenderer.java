@@ -1,21 +1,13 @@
 package com.husker.weblafplugin.skin.core.components.list;
 
-import com.husker.weblafplugin.core.components.list.DefaultCellRenderer;
+import com.husker.weblafplugin.core.components.list.FileCellRenderer;
 import com.husker.weblafplugin.core.tools.Tools;
 import com.husker.weblafplugin.skin.core.IncludeElement;
-import com.intellij.icons.AllIcons;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleType;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.roots.ProjectFileIndex;
-import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.util.PsiUtilCore;
 
 import javax.swing.*;
 
-public class IncludeListCellRenderer extends DefaultCellRenderer<IncludeElement> {
+public class IncludeListCellRenderer extends FileCellRenderer<IncludeElement> {
 
     public void initComponents(){
         addIcon("icon");

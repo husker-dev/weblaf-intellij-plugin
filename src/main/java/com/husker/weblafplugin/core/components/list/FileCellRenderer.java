@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import static java.awt.FlowLayout.LEFT;
 import static java.awt.FlowLayout.RIGHT;
 
-public abstract class DefaultCellRenderer<T> extends JPanel implements ListCellRenderer<T> {
+public abstract class FileCellRenderer<T> extends JPanel implements ListCellRenderer<T> {
 
     private JPanel left_panel, right_panel;
 
@@ -33,7 +33,7 @@ public abstract class DefaultCellRenderer<T> extends JPanel implements ListCellR
         return ErrorColor;
     }
 
-    public DefaultCellRenderer(){
+    public FileCellRenderer(){
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(0, 20));
 

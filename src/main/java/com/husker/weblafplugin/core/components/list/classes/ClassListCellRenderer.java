@@ -1,11 +1,11 @@
 package com.husker.weblafplugin.core.components.list.classes;
 
-import com.husker.weblafplugin.core.components.list.DefaultCellRenderer;
+import com.husker.weblafplugin.core.components.list.FileCellRenderer;
 import com.husker.weblafplugin.core.tools.Tools;
 import com.intellij.ide.highlighter.JavaClassFileType;
 import com.intellij.psi.PsiClass;
 
-public class ClassListCellRenderer extends DefaultCellRenderer<String> {
+public class ClassListCellRenderer extends FileCellRenderer<String> {
 
     public void initComponents() {
         addIcon("icon");

@@ -11,13 +11,13 @@ import java.util.*;
 import static com.intellij.ide.dnd.SmoothAutoScroller.installDropTargetAsNecessary;
 
 
-public abstract class DefaultList<T> extends JBList<T> {
+public abstract class FileList<T> extends JBList<T> {
 
     private HashMap<String, HashMap<T, Object>> cached = new HashMap<>();
 
     private T[] content;
 
-    public DefaultList() {
+    public FileList() {
         super(new CollectionListModel<T>(){
             public void exchangeRows(int oldIndex, int newIndex) {
                 T elementToMove = getElementAt(oldIndex);
@@ -30,11 +30,11 @@ public abstract class DefaultList<T> extends JBList<T> {
         });
     }
 
-    public DefaultList(@NotNull ListModel<T> dataModel) {
+    public FileList(@NotNull ListModel<T> dataModel) {
         super(dataModel);
     }
 
-    public DefaultList(@NotNull T... listData) {
+    public FileList(@NotNull T... listData) {
         super(listData);
         setModel(new CollectionListModel<T>(){
             public void exchangeRows(int oldIndex, int newIndex) {
@@ -48,7 +48,7 @@ public abstract class DefaultList<T> extends JBList<T> {
         });
     }
 
-    public DefaultList(@NotNull Collection<? extends T> items) {
+    public FileList(@NotNull Collection<? extends T> items) {
         super(items);
         setModel(new CollectionListModel<T>(){
             public void exchangeRows(int oldIndex, int newIndex) {
