@@ -28,7 +28,7 @@ public class IncludeVariable extends XmlVariable {
 
         SkinEditor skinEditor = getSkinEditor();
         Project project = skinEditor.getProject();
-        String resource_path = skinEditor.getResourcePath();
+        String resource_path = skinEditor.Resources.getResourcePath();
 
         for(Element element : getElement().getChildren())
             if (element.getName().equals("include"))

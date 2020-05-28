@@ -21,7 +21,7 @@ public class ResourceChooserParameter extends TextButtonParameter {
         super.onInit();
 
         addButtonListener(e -> {
-            String resource_folder = getSkinEditor().getResourcePath();
+            String resource_folder = getSkinEditor().Resources.getResourcePath();
 
             PsiFile psiFile = new FileListDialog(getSkinEditor().getProject(), fileType, resource_folder).getPsiFile();
             if(psiFile != null){
@@ -38,7 +38,7 @@ public class ResourceChooserParameter extends TextButtonParameter {
     }
 
     public String getResourcePath(){
-        return SkinEditorManager.get(this).getResourcePath();
+        return SkinEditorManager.get(this).Resources.getResourcePath();
     }
 
     public String getFilePath(){
@@ -47,7 +47,7 @@ public class ResourceChooserParameter extends TextButtonParameter {
 
     public boolean haveErrors() {
         try {
-            String path = getSkinEditor().getResourcePath() + "/" + getFilePath();
+            String path = getSkinEditor().Resources.getResourcePath() + "/" + getFilePath();
             VirtualFile file = Tools.getVirtualFile(path);
             return file == null;
         }catch (Exception ex){

@@ -2,7 +2,7 @@ package com.husker.weblafplugin.core.tools;
 
 import java.awt.*;
 
-public class ComponentSizeTools {
+public class ComponentTools {
 
     public static void setWidth(Component component, int width){
         component.setMaximumSize(new Dimension(width, component.getMaximumSize().height));

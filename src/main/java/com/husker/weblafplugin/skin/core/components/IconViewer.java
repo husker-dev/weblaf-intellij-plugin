@@ -1,7 +1,7 @@
 package com.husker.weblafplugin.skin.core.components;
 
+import com.husker.weblafplugin.core.tools.ComponentTools;
 import com.husker.weblafplugin.skin.core.managers.SkinEditorManager;
-import com.husker.weblafplugin.core.tools.ComponentSizeTools;
 import com.husker.weblafplugin.skin.core.variables.ValueChangedListener;
 import com.husker.weblafplugin.core.tools.Tools;
 
@@ -24,7 +24,7 @@ public class IconViewer extends JLabel implements VariableApplier {
     }
 
     public void onInit(){
-        ComponentSizeTools.setSize(this, size, size);
+        ComponentTools.setSize(this, size, size);
     }
 
     public void addValueChangedListener(ValueChangedListener listener) {
@@ -32,7 +32,7 @@ public class IconViewer extends JLabel implements VariableApplier {
     }
 
     public String getResourcePath(){
-        return SkinEditorManager.get(this).getResourcePath();
+        return SkinEditorManager.get(this).Resources.getResourcePath();
     }
 
     public void setValue(Object value) {

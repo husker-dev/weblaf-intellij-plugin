@@ -1,14 +1,21 @@
 package com.husker.weblafplugin.core.tools;
 
+import com.husker.weblafplugin.skin.core.components.list.IncludeList;
 import com.intellij.codeInsight.completion.AllClassesGetter;
 import com.intellij.codeInsight.completion.PlainPrefixMatcher;
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.fileTypes.FileTypeManager;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleType;
+import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ProjectFileIndex;
+import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.JarFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -16,6 +23,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.InheritanceUtil;
+import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.util.indexing.FileBasedIndex;
@@ -25,7 +33,9 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.File;
 import java.io.PrintWriter;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class Tools {
@@ -180,5 +190,40 @@ public class Tools {
             }
         });
         return scroll;
+    }
+
+    public static <T> T[] ListToArray(List<T> list){
+        if(list.size() == 0)
+            return null;
+
+        T[] stackArray = (T[]) Array.newInstance(list.get(0).getClass(), list.size());
+        for (int i = 0; i < list.size(); i++)
+            stackArray[i] = list.get(i);
+        return stackArray;
+    }
+
+    public static String getClassResourcePath(PsiClass clazz){
+        if(clazz == null)
+            return null;
+        String class_path = clazz.getContainingFile().getVirtualFile().getPath();
+        return new File(class_path).getParent().replace("\\", "/");
+    }
+
+    public static Icon getModuleIcon(PsiClass psiClass){
+        if(psiClass != null) {
+            ProjectFileIndex fileIndex = ProjectRootManager.getInstance(psiClass.getProject()).getFileIndex();
+            VirtualFile vFile = PsiUtilCore.getVirtualFile(psiClass);
+            if (vFile != null && fileIndex.isInLibrary(vFile)) {
+                return AllIcons.Nodes.PpLibFolder;
+            } else {
+                Module module = ModuleUtilCore.findModuleForPsiElement(psiClass);
+                if (module != null)
+                    return ModuleType.get(module).getIcon();
+                else
+                    return null;
+            }
+        }
+
+        return null;
     }
 }

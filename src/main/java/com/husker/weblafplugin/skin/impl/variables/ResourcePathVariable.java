@@ -16,8 +16,8 @@ public class ResourcePathVariable extends Variable {
     }
 
     public Object getValue() {
-        if(editor.getResourcePath() != null)
-            return editor.getResourcePath().replace("/", "\\");
+        if(editor.Resources.getResourcePath() != null)
+            return editor.Resources.getResourcePath().replace("/", "\\");
         else
             return "[Wrong class]";
     }

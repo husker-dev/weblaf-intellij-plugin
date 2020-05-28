@@ -1,6 +1,13 @@
 package com.husker.weblafplugin.core.components.scroll;
 
+import com.intellij.openapi.ui.SimpleToolWindowPanel;
+import com.intellij.openapi.util.Key;
+import com.intellij.ui.GuiUtils;
+import com.intellij.ui.ToolbarDecorator;
+import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBScrollPane;
+import com.intellij.ui.components.JBViewport;
+import com.intellij.util.ui.UIUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,6 +41,9 @@ public class TransparentScrollPane extends JBScrollPane {
     }
 
     private void init(){
+        UIUtil.putClientProperty((JComponent)getViewport().getView(), Key.create("forceVisibleRowCount"), true);
+
+        /*
         addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent e) {
                 updateContent();
@@ -48,6 +58,8 @@ public class TransparentScrollPane extends JBScrollPane {
                 updateContent();
             }
         });
+
+         */
     }
 
     private void updateContent(){

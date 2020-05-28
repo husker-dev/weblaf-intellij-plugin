@@ -5,7 +5,7 @@ import com.husker.weblafplugin.core.components.textfield.magic.classes.MagicClas
 import com.husker.weblafplugin.core.components.textfield.magic.path.MagicPathContent;
 import com.husker.weblafplugin.core.dialogs.ClassChooserDialog;
 import com.husker.weblafplugin.core.dialogs.FileListDialog;
-import com.husker.weblafplugin.core.tools.ComponentSizeTools;
+import com.husker.weblafplugin.core.tools.ComponentTools;
 import com.husker.weblafplugin.core.tools.Tools;
 import com.husker.weblafplugin.skin.core.IncludeElement;
 import com.intellij.ide.highlighter.XmlFileType;
@@ -23,22 +23,43 @@ import java.awt.*;
 
 public class IncludeElementEditorDialog extends DialogWrapper {
 
-    private Project project;
+    private final Project project;
     private final String skinClass;
+    private String[] blackList;
     private String nearClass;
+    private String resourcePath;
 
-    private MagicTextField classPath;
-    private MagicTextField resourcePath;
+    private MagicTextField classPathField;
+    private MagicTextField resourcePathField;
+
+    public IncludeElementEditorDialog(String skinClass, IncludeElement element) {
+        super(element.getProject());
+
+        setTitle("Include Element");
+
+        this.project = element.getProject();
+        if(element.getNearClass() != null && !element.getNearClass().isEmpty())
+            this.skinClass = element.getNearClass();
+        else
+            this.skinClass = skinClass;
+        this.nearClass = this.skinClass;
+        this.resourcePath = element.getLocalPath();
+        init();
+    }
 
     public IncludeElementEditorDialog(Project project, String skinClass) {
         super(project);
 
-        setTitle("Include element");
+        setTitle("Include Element");
 
         this.project = project;
         this.skinClass = skinClass;
-        this.nearClass = skinClass;
+        this.nearClass = this.skinClass;
         init();
+    }
+
+    public void setBlackList(String... blackList){
+        this.blackList = blackList;
     }
 
     protected JComponent createCenterPanel() {
@@ -46,7 +67,7 @@ public class IncludeElementEditorDialog extends DialogWrapper {
         panel.setPreferredSize(new Dimension(450, 0));
         panel.setLayout(new VerticalFlowLayout());
 
-        classPath = new MagicTextField(new MagicClassContent(project)){{
+        classPathField = new MagicTextField(new MagicClassContent(project)){{
             if(skinClass != null)
                 setText(skinClass);
             getDocument().addDocumentListener(new DocumentListener() {
@@ -68,28 +89,31 @@ public class IncludeElementEditorDialog extends DialogWrapper {
             addActionListener(e -> {
                 PsiClass clazz = new ClassChooserDialog(project, "Select near class", "com.alee.managers.style.XmlSkin").getPsiClass();
                 if(clazz != null)
-                    classPath.setText(clazz.getQualifiedName());
+                    classPathField.setText(clazz.getQualifiedName());
             });
         }};
 
-        resourcePath = new MagicTextField(new MagicPathContent(project));
+        resourcePathField = new MagicTextField(new MagicPathContent(project)){{
+            if(resourcePath != null)
+                setText(resourcePath);
+        }};
         JButton resourceBtn = new JButton("..."){{
             addActionListener(e -> {
                 try {
                     String nearClassPath = Tools.getClassByPath(project, nearClass).getContainingFile().getVirtualFile().getPath();
                     nearClassPath = nearClassPath.substring(0, nearClassPath.lastIndexOf("/")) + "/";
 
-                    PsiFile file = new FileListDialog(project, XmlFileType.INSTANCE, nearClassPath).getPsiFile();
+                    PsiFile file = new FileListDialog(project, XmlFileType.INSTANCE, nearClassPath, blackList).getPsiFile();
                     if (file != null) {
                         String path = file.getVirtualFile().getPath().replace(nearClassPath, "");
-                        resourcePath.setText(path);
+                        resourcePathField.setText(path);
                     }
                 }catch (Exception ex){}
             });
         }};
 
-        panel.add(createTextAndButton("Path", resourcePath, resourceBtn));
-        panel.add(createTextAndButton("Near class", classPath, classPathBtn));
+        panel.add(createTextAndButton("Path", resourcePathField, resourceBtn));
+        panel.add(createTextAndButton("Near class", classPathField, classPathBtn));
 
         return panel;
     }
@@ -98,9 +122,9 @@ public class IncludeElementEditorDialog extends DialogWrapper {
         return new JPanel(){{
             setLayout(new BorderLayout());
 
-            ComponentSizeTools.setWidth(button, 40);
+            ComponentTools.setWidth(button, 40);
             add(new JLabel(text + ":"){{
-                ComponentSizeTools.setWidth(this, 70);
+                ComponentTools.setWidth(this, 70);
             }}, BorderLayout.WEST);
             add(field);
             add(button, BorderLayout.EAST);
@@ -110,14 +134,14 @@ public class IncludeElementEditorDialog extends DialogWrapper {
     public IncludeElement getIncludeElement(){
         show();
         if(isOK()){
-            PsiClass clazz = Tools.getClassByPath(project, classPath.getText());
-            if(clazz != null && !resourcePath.getText().isEmpty()){
+            PsiClass clazz = Tools.getClassByPath(project, classPathField.getText());
+            if(clazz != null && !resourcePathField.getText().isEmpty()){
                 String classFilePath = clazz.getContainingFile().getVirtualFile().getPath();
                 String resourcePath = classFilePath.substring(0, classFilePath.lastIndexOf("/")) + "/";
 
-                VirtualFile file = Tools.getVirtualFile(resourcePath + this.resourcePath.getText());
+                VirtualFile file = Tools.getVirtualFile(resourcePath + this.resourcePathField.getText());
                 if(file != null)
-                    return new IncludeElement(project, resourcePath, this.resourcePath.getText(), nearClass.equals(skinClass) ? "" : clazz.getQualifiedName());
+                    return new IncludeElement(project, resourcePath, this.resourcePathField.getText(), nearClass.equals(skinClass) ? null : clazz.getQualifiedName());
             }
         }
         return null;

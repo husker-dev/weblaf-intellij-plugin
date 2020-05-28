@@ -1,7 +1,7 @@
 package com.husker.weblafplugin.skin.core.parameters;
 
+import com.husker.weblafplugin.core.tools.ComponentTools;
 import com.husker.weblafplugin.skin.core.components.parameter.Parameter;
-import com.husker.weblafplugin.core.tools.ComponentSizeTools;
 import com.husker.weblafplugin.skin.core.variables.ValueChangedListener;
 import com.intellij.openapi.ui.ComboBox;
 
@@ -18,7 +18,7 @@ public class ComboBoxParameter extends Parameter {
 
     public void onInit(){
         add(comboBox = new ComboBox<>());
-        ComponentSizeTools.setWidth(comboBox, DEFAULT_WIDTH);
+        ComponentTools.setWidth(comboBox, DEFAULT_WIDTH);
     }
 
     public void addValueChangedListener(ValueChangedListener listener) {

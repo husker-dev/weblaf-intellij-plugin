@@ -1,10 +1,10 @@
 package com.husker.weblafplugin.skin.core.parameters;
 
+import com.husker.weblafplugin.core.tools.ComponentTools;
 import com.husker.weblafplugin.skin.core.components.parameter.Parameter;
 import com.husker.weblafplugin.core.components.textfield.TextChangedListener;
 import com.husker.weblafplugin.core.components.textfield.LazyTextField;
 import com.husker.weblafplugin.skin.core.variables.ValueChangedListener;
-import com.husker.weblafplugin.core.tools.ComponentSizeTools;
 
 import java.awt.*;
 
@@ -23,7 +23,7 @@ public class TextParameter extends Parameter {
 
     public void onInit(){
         add(textField = new LazyTextField());
-        ComponentSizeTools.setWidth(textField, width);
+        ComponentTools.setWidth(textField, width);
     }
 
     public boolean haveErrors() {

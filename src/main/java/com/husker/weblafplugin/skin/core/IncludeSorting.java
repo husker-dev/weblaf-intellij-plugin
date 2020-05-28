@@ -210,6 +210,7 @@ public class IncludeSorting{
                 boolean EXT1 = extends1 != null;
                 boolean EXT2 = extends2 != null;
 
+                // For debug:
                 //System.out.println(ID1 + " " + ID2 + " " + EXT1 + " " + EXT2);
 
                 // Return upper skin!!!
@@ -247,11 +248,8 @@ public class IncludeSorting{
                     return compareSecondIdAndFirstExtends(id2, extends1);
                 // (-1) <skin type="same" id="label" extends="other">
                 // ( 1) <skin type="same" id="label">
-                if(ID1 && ID2 & EXT1 && !EXT2) {
-                    if(id2.equals(extends1))
-                        return 1;
-                    return id1.compareTo(id2);
-                }
+                if(ID1 && ID2 & EXT1 && !EXT2)
+                    return compareSecondIdAndFirstExtends(id2, extends1);
                 // (-1) <skin type="same" id="label">
                 // ( 1) <skin type="same" extends="other">
                 if(ID1 && !ID2 & !EXT1)
@@ -295,17 +293,25 @@ public class IncludeSorting{
         }
 
         int compareFirstIdAndSecondExtends(String id1, String extend2){
+            return -1;
+            /*
             if(id1.equals(extend2))
                 return -1;
             else
                 return 1;
+
+             */
         }
 
         int compareSecondIdAndFirstExtends(String id2, String extend1){
+            return 1;
+            /*
             if(id2.equals(extend1))
                 return 1;
             else
                 return -1;
+
+             */
         }
     }
 

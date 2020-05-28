@@ -16,6 +16,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class FileListDialog extends DialogWrapper {
 
@@ -25,8 +26,10 @@ public class FileListDialog extends DialogWrapper {
     public FileListDialog(Project project, FileType fileType) {
         this(project, fileType, "");
     }
-    public FileListDialog(Project project, FileType fileType, String contains) {
+    public FileListDialog(Project project, FileType fileType, String contains, String... blackList) {
         super(project);
+
+        ArrayList<String> blackListArray = new ArrayList<>(Arrays.asList(blackList));
 
         setTitle("Select File");
 
@@ -37,7 +40,7 @@ public class FileListDialog extends DialogWrapper {
             if (contains == null)
                 break;
 
-            if (file.getPath().contains(contains))
+            if (file.getPath().contains(contains) && !blackListArray.contains(file.getPath()))
                 psi_files.add(Tools.getPsi(project, file));
         }
 

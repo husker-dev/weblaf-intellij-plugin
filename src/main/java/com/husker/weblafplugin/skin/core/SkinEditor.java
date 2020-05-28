@@ -19,7 +19,6 @@ import com.intellij.psi.impl.source.tree.java.PsiExpressionStatementImpl;
 import org.jdom.Element;
 
 import javax.swing.*;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
@@ -34,6 +33,8 @@ public abstract class SkinEditor extends JPanel {
     private Consumer<FileEditorManagerEvent> selectedFileEditorChangedListener;
 
     private boolean isAfterEditorChangedEvent = false;
+
+    public Resources Resources = new Resources();
 
     public SkinEditor(Project project, VirtualFile file){
         this.project = project;
@@ -104,39 +105,47 @@ public abstract class SkinEditor extends JPanel {
         old_file = skin_head;
     }
 
-    public String getResourcePath(){
-        try {
-            PsiClass clazz = getPsiClass();
-            if(clazz == null)
+    public class Resources {
+        public String getClassPath(){
+            return getPsiClass().getQualifiedName();
+        }
+
+        public PsiClass getPsiClass(){
+            try {
+                PsiClass clazz = SkinEditor.this.getPsiClass();
+                if(clazz == null)
+                    return null;
+
+                if(clazz.getConstructors()[0].getBody() == null)
+                    clazz = (PsiClass) clazz.getNavigationElement();
+
+                if(clazz.getConstructors()[0].getBody() == null)
+                    return getCompiledClassResourcePath(clazz);
+
+                PsiExpressionStatementImpl constructor = (PsiExpressionStatementImpl) clazz.getConstructors()[0].getBody().getStatements()[0];
+
+                PsiMethodCallExpression super_call = (PsiMethodCallExpression)constructor.getExpression();
+                PsiNewExpression resource_instance = (PsiNewExpression)super_call.getArgumentList().getExpressions()[0];
+
+                String resource_class_name = resource_instance.getClassOrAnonymousClassReference().getQualifiedName();
+
+                if(resource_class_name.equals("com.alee.api.resource.ClassResource")){
+                    PsiClassObjectAccessExpressionImpl class_resource_class_expression = (PsiClassObjectAccessExpressionImpl) resource_instance.getArgumentList().getExpressions()[0];
+
+                    PsiTypeElement class_resource_class_type = (PsiTypeElement) class_resource_class_expression.findChildByRole(ChildRole.TYPE);
+                    PsiJavaCodeReferenceElementImpl class_resource_class_reference = (PsiJavaCodeReferenceElementImpl) class_resource_class_type.getChildren()[0];
+
+                    return Tools.getClassByPath(project, class_resource_class_reference.getCanonicalText());
+                }
                 return null;
-
-            if(clazz.getConstructors()[0].getBody() == null)
-                clazz = (PsiClass) clazz.getNavigationElement();
-
-            if(clazz.getConstructors()[0].getBody() == null)
-                return getClassPath(getCompiledClassResourcePath(clazz));
-
-            PsiExpressionStatementImpl constructor = (PsiExpressionStatementImpl) clazz.getConstructors()[0].getBody().getStatements()[0];
-
-            PsiMethodCallExpression super_call = (PsiMethodCallExpression)constructor.getExpression();
-            PsiNewExpression resource_instance = (PsiNewExpression)super_call.getArgumentList().getExpressions()[0];
-
-            String resource_class_name = resource_instance.getClassOrAnonymousClassReference().getQualifiedName();
-
-            if(resource_class_name.equals("com.alee.api.resource.ClassResource")){
-                PsiClassObjectAccessExpressionImpl class_resource_class_expression = (PsiClassObjectAccessExpressionImpl) resource_instance.getArgumentList().getExpressions()[0];
-
-                PsiTypeElement class_resource_class_type = (PsiTypeElement) class_resource_class_expression.findChildByRole(ChildRole.TYPE);
-                PsiJavaCodeReferenceElementImpl class_resource_class_reference = (PsiJavaCodeReferenceElementImpl) class_resource_class_type.getChildren()[0];
-
-                PsiClass class_resource_class = Tools.getClassByPath(project, class_resource_class_reference.getCanonicalText());
-
-                return getClassPath(class_resource_class);
+            }catch (Exception ex){
+                ex.printStackTrace();
+                return null;
             }
-            return null;
-        }catch (Exception ex){
-            ex.printStackTrace();
-            return null;
+        }
+
+        public String getResourcePath(){
+            return Tools.getClassResourcePath(getPsiClass());
         }
     }
 
@@ -177,18 +186,11 @@ public abstract class SkinEditor extends JPanel {
         return Tools.getClassByPath(project, class_name);
     }
 
-    public String getClassPath(PsiClass clazz){
-        if(clazz == null)
-            return null;
-        String class_path = clazz.getContainingFile().getVirtualFile().getPath();
-        return new File(class_path).getParent().replace("\\", "/");
-    }
-
     public PsiClass getPsiClass(){
-        return Tools.getClassByPath(project, getClassName());
+        return Tools.getClassByPath(project, getClassPath());
     }
 
-    public String getClassName(){
+    public String getClassPath(){
         return getSkinElement().getChildText("class", getSkinElement().getNamespace());
     }
 
