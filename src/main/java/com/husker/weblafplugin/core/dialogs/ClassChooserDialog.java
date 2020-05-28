@@ -29,6 +29,7 @@ public class ClassChooserDialog extends DialogWrapper {
     private final JPanel component;
     private final ArrayList<String> blackList = new ArrayList<>();
     private JBTabbedPane tabbedPane;
+    private int nowLoading = 0;
 
     public ClassChooserDialog(Project project, String title) {
         this(project, title, (String) null);
@@ -75,7 +76,6 @@ public class ClassChooserDialog extends DialogWrapper {
                 }
             });
         }));
-
 
         init();
     }
@@ -126,7 +126,6 @@ public class ClassChooserDialog extends DialogWrapper {
         private Consumer<ClassListPage> onLoad;
 
         public ClassListPage(String title, Consumer<ClassListPage> onLoad){
-            setBackground(Color.GREEN);
             this.onLoad = onLoad;
             this.title = title;
             setLayout(new BorderLayout());
@@ -209,7 +208,15 @@ public class ClassChooserDialog extends DialogWrapper {
             ApplicationManager.getApplication().executeOnPooledThread(() -> {
                 ApplicationManager.getApplication().runReadAction(() -> {
                     setSearchActive(true);
+                    nowLoading ++;
+                    setOKActionEnabled(false);
+
                     onLoad.accept(this);
+
+                    nowLoading --;
+                    if(nowLoading == 0)
+                        setOKActionEnabled(true);
+
                     setSearchActive(false);
                 });
             });
