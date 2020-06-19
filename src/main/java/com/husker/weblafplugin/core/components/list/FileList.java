@@ -1,6 +1,5 @@
 package com.husker.weblafplugin.core.components.list;
 
-import com.husker.weblafplugin.skin.core.IncludeElement;
 import com.intellij.ui.CollectionListModel;
 import com.intellij.ui.components.JBList;
 import org.jetbrains.annotations.NotNull;

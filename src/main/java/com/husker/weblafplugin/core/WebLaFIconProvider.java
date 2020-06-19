@@ -3,7 +3,6 @@ package com.husker.weblafplugin.core;
 import com.intellij.ide.IconProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.util.ui.StartupUiUtil;
 import icons.MyFileIcons;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,15 +18,15 @@ public class WebLaFIconProvider extends IconProvider {
             if (containingFile == null || !containingFile.getName().endsWith(".xml"))
                 return null;
 
-            boolean isDark = StartupUiUtil.isUnderDarcula();
+            //boolean isDark = StartupUiUtil.isUnderDarcula();
 
             switch (WebLaFTypeChecker.getType(containingFile.getText())) {
                 case SKIN:
-                    return isDark ? MyFileIcons.DARK_SKIN : MyFileIcons.LIGHT_SKIN;
+                    return MyFileIcons.SKIN;
                 case STYLE:
-                    return isDark ? MyFileIcons.DARK_STYLE : MyFileIcons.LIGHT_STYLE;
+                    return MyFileIcons.STYLE;
                 case SKIN_AND_STYLE:
-                    return isDark ? MyFileIcons.DARK_SKIN_AND_STYLE : MyFileIcons.LIGHT_SKIN_AND_STYLE;
+                    return MyFileIcons.MIXED;
                 case UNKNOWN:
                     return null;
             }

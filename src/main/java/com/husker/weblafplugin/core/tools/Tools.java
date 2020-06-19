@@ -1,6 +1,5 @@
 package com.husker.weblafplugin.core.tools;
 
-import com.husker.weblafplugin.skin.core.components.list.IncludeList;
 import com.intellij.codeInsight.completion.AllClassesGetter;
 import com.intellij.codeInsight.completion.PlainPrefixMatcher;
 import com.intellij.icons.AllIcons;
