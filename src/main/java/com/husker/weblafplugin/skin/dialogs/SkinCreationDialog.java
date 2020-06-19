@@ -1,6 +1,8 @@
 package com.husker.weblafplugin.skin.dialogs;
 
 import com.alee.managers.style.XmlSkin;
+import com.husker.weblafplugin.core.components.textfield.magic.MagicTextField;
+import com.husker.weblafplugin.core.components.textfield.magic.impl.MagicClassContent;
 import com.husker.weblafplugin.core.dialogs.ClassChooserDialog;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
@@ -8,33 +10,90 @@ import com.intellij.openapi.ui.VerticalFlowLayout;
 import com.intellij.psi.PsiClass;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 
 public class SkinCreationDialog extends DialogWrapper {
 
-    private Project project;
-
     private int text_width = 80;
-    private JTextField title = new JTextField();
-    private JTextField tf_class = new JTextField();
-    private JButton btn_classes = new JButton("..."){{
-        setPreferredSize(new Dimension(30, 22));
-        addActionListener(e -> {
-            PsiClass clazz = new ClassChooserDialog(project, "Select Skin Class", XmlSkin.class).getPsiClass();
+    private JTextField title;
 
-            if(clazz != null)
-                tf_class.setText(clazz.getQualifiedName());
-        });
-    }};
-    private JTextField author = new JTextField(System.getProperty("user.name"));
-
+    private JCheckBox class_create;
+    private MagicTextField class_path;
+    private JButton class_chooser_btn;
 
     public SkinCreationDialog(Project project) {
         super(project);
+
+        title = new JTextField(){{
+            getDocument().addDocumentListener(new DocumentListener() {
+                public void changedUpdate(DocumentEvent e) {
+                    event();
+                }
+                public void removeUpdate(DocumentEvent e) {
+                    event();
+                }
+                public void insertUpdate(DocumentEvent e) {
+                    event();
+                }
+                public void event() {
+                    updateOkButton();
+                }
+            });
+        }};
+
+        class_create = new JCheckBox("Create new class automatically");
+        class_create.setSelected(true);
+        class_create.addActionListener(e -> {
+            updateOkButton();
+            class_path.setEnabled(!class_create.isSelected());
+            class_chooser_btn.setEnabled(!class_create.isSelected());
+        });
+
+        class_path = new MagicTextField(new MagicClassContent(project));
+        class_path.setEnabled(!class_create.isSelected());
+        class_path.getDocument().addDocumentListener(new DocumentListener() {
+            public void changedUpdate(DocumentEvent e) {
+                event();
+            }
+            public void removeUpdate(DocumentEvent e) {
+                event();
+            }
+            public void insertUpdate(DocumentEvent e) {
+                event();
+            }
+            public void event() {
+                updateOkButton();
+            }
+        });
+
+        class_chooser_btn = new JButton("...");
+        class_chooser_btn.setPreferredSize(new Dimension(30, 22));
+        class_chooser_btn.addActionListener(e -> {
+            PsiClass clazz = new ClassChooserDialog(project, "Select Skin Class", XmlSkin.class).getPsiClass();
+
+            if (clazz != null)
+                class_path.setText(clazz.getQualifiedName());
+        });
+        class_chooser_btn.setEnabled(!class_create.isSelected());
+
+        updateOkButton();
+
         init();
         setTitle("New WebLaF Skin");
+    }
 
-        this.project = project;
+    private void updateOkButton(){
+        if(title.getText().isEmpty()){
+            setOKActionEnabled(false);
+            return;
+        }
+        if(!class_create.isSelected() && class_path.getText().isEmpty()){
+            setOKActionEnabled(false);
+            return;
+        }
+        setOKActionEnabled(true);
     }
 
     protected JComponent createCenterPanel() {
@@ -43,12 +102,15 @@ public class SkinCreationDialog extends DialogWrapper {
 
         panel.setLayout(new VerticalFlowLayout());
         panel.add(createParameter("Title", title));
-        panel.add(createParameter("Class", tf_class, btn_classes));
-        panel.add(createParameter("Author", author));
+        panel.add(createParameter(class_create));
+        panel.add(createParameter("Class", class_path, class_chooser_btn));
 
         return panel;
     }
 
+    private JPanel createParameter(JComponent component){
+        return createParameter("", component);
+    }
     private JPanel createParameter(String name, JComponent component){
         return new JPanel(){{
             setLayout(new BorderLayout());
@@ -66,7 +128,7 @@ public class SkinCreationDialog extends DialogWrapper {
     }
 
     private JLabel createLabel(String text){
-        return new JLabel(text + ":"){{
+        return new JLabel(text + (text.isEmpty() ? "" : ":")){{
             setPreferredSize(new Dimension(text_width, 22));
         }};
     }
@@ -77,14 +139,15 @@ public class SkinCreationDialog extends DialogWrapper {
         return title.getText();
     }
     public String getXmlStyleClass(){
-        if(tf_class.getText().replaceAll("\\s",".").equals(""))
+        if(class_path.getText().replaceAll("\\s",".").equals(""))
             return "com.example.XmlSkin";
-        return tf_class.getText();
+        return class_path.getText();
+    }
+    public boolean isAutoCreateClassFile(){
+        return class_create.isSelected();
     }
     public String getAuthor(){
-        if(author.getText().replaceAll("\\s",".").equals(""))
-            return "YourName";
-        return author.getText();
+        return System.getProperty("user.name");
     }
     public String getId(){
         return getTitle().toLowerCase().replaceAll("\\s",".");

@@ -41,6 +41,8 @@ public class NewSkinFileAction extends AnAction {
 
             PsiFile file = PsiFileFactory.getInstance(Objects.requireNonNull(event.getProject())).createFileFromText(dialog.getFileName() + ".xml", XmlFileType.INSTANCE, text);
             Tools.createAndOpen(event, file);
+
+            // TODO: Auto class creation impl
         }
     }
 

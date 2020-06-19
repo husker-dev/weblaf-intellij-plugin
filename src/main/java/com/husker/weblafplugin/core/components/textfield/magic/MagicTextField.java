@@ -6,6 +6,7 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
@@ -53,6 +54,7 @@ public class MagicTextField extends JBTextField {
     }
 
     public void setMagicPanel(MagicContent content){
+        content.setMagicTextField(this);
         this.content = content;
         content.setBackground(content.getBackgroundColor());
 
@@ -106,6 +108,12 @@ public class MagicTextField extends JBTextField {
                     content.update(getText());
             }
         });
+    }
+
+    public void setEnabled(boolean enabled){
+        super.setEnabled(enabled);
+        content.setBackground(content.getBackgroundColor());
+        content.update(getText());
     }
 
     public void configurePanelPadding(JPanel panel){

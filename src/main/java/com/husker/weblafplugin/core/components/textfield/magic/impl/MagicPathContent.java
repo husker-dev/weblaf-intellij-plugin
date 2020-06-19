@@ -31,6 +31,7 @@ public class MagicPathContent extends MagicIconContent {
     }
 
     public void update(String text) {
+        super.update(text);
         try{
             text = text.replace("\\", "/");
 
@@ -55,6 +56,7 @@ public class MagicPathContent extends MagicIconContent {
             }
 
             name.setText(name_text);
+            name.setForeground(getMagicTextField().isEnabled() ? UIUtil.getTextAreaForeground() : UIUtil.getInactiveTextColor());
             path.setText(path_text);
         }catch (Exception ex){
             ex.printStackTrace();

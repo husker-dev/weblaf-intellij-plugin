@@ -30,9 +30,7 @@ public abstract class SkinEditor extends JPanel {
 
     private Element old_file;
 
-    private Consumer<FileEditorManagerEvent> selectedFileEditorChangedListener;
-
-    private boolean isAfterEditorChangedEvent = false;
+    private final Consumer<FileEditorManagerEvent> selectedFileEditorChangedListener;
 
     public Resources Resources = new Resources();
 
@@ -41,7 +39,7 @@ public abstract class SkinEditor extends JPanel {
         this.file = file;
         setLayout(new VerticalFlowLayout());
 
-        // TODO: move to plugin init action
+        // TODO: move to plugin init action!!!
         ApplicationManager.getApplication().runWriteAction(() -> {
             ExternalResourceManager.getInstance().addResource("http://weblookandfeel.com/XmlSkin", "validation/XmlSkin.xsd");
             ExternalResourceManager.getInstance().addResource("http://weblookandfeel.com/XmlSkinExtension", "validation/XmlSkinExtension.xsd");
@@ -49,18 +47,12 @@ public abstract class SkinEditor extends JPanel {
 
         ParameterManager.markAsParameterContainer(this);
 
-        ParameterManager.addReloadListener(this, container -> {
-            if(!isAfterEditorChangedEvent)
-                updateSkinElement();
-        });
-
         // File editor changed listener
         selectedFileEditorChangedListener = event -> {
             try {
                 if (event.getNewEditor() != null && event.getNewEditor().getClass() == SkinFileEditor.class) {
                     try {
-                        isAfterEditorChangedEvent = true;
-                        updateSkinElement();
+                        reloadSkinElement();
 
                         // If xml changed
                         if (old_file == null || !XmlTools.areEqual(skin_head, old_file))
@@ -71,7 +63,7 @@ public abstract class SkinEditor extends JPanel {
                         // Ignore
                     } catch (Exception ex) {
                         ex.printStackTrace();
-                        // TODO Make error screen
+                        // TODO Make error screen (or not...)
                     }
                 }
             }catch (Exception ex){
@@ -80,6 +72,7 @@ public abstract class SkinEditor extends JPanel {
         };
         Listeners.selectedFileEditorChanged(project, selectedFileEditorChangedListener);
 
+        reloadSkinElement();
     }
 
     public Element getSkinElement(){
@@ -90,7 +83,7 @@ public abstract class SkinEditor extends JPanel {
         return project;
     }
 
-    public void updateSkinElement(){
+    public void reloadSkinElement(){
         try {
             skin_head = XmlTools.getElement(Tools.getPsi(project, file).getText());
         }catch (Exception ex){

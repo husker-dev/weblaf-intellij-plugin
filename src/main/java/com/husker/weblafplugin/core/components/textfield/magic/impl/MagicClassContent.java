@@ -25,6 +25,7 @@ public class MagicClassContent extends MagicIconContent {
     }
 
     public void update(String text) {
+        super.update(text);
         try{
             PsiClass clazz = Tools.getClassByPath(project, text);
             if(clazz != null)
@@ -43,6 +44,7 @@ public class MagicClassContent extends MagicIconContent {
             }
 
             name.setText(name_text);
+            name.setForeground(getMagicTextField().isEnabled() ? UIUtil.getTextAreaForeground() : UIUtil.getInactiveTextColor());
             path.setText(path_text);
         }catch (Exception ex){
             ex.printStackTrace();

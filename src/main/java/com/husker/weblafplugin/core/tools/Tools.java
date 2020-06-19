@@ -26,16 +26,22 @@ import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.util.indexing.FileBasedIndex;
+import com.intellij.util.ui.ImageUtil;
+import com.intellij.util.ui.UIUtil;
 
 import javax.swing.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.PrintWriter;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+
+import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 
 public class Tools {
 
@@ -224,5 +230,28 @@ public class Tools {
         }
 
         return null;
+    }
+
+    public static Icon getDarkerIcon(Icon icon){
+        BufferedImage image = ImageUtil.createImage(icon.getIconWidth(), icon.getIconHeight(), TYPE_INT_ARGB);
+        icon.paintIcon(null, image.getGraphics(), 0, 0);
+
+        WritableRaster wr = image.getRaster();
+        int[] pixel = new int[4];
+        for(int i = 0; i < wr.getWidth(); i++){
+            for(int j = 0; j < wr.getHeight(); j++){
+                wr.getPixel(i, j, pixel);
+                float percent = UIUtil.isUnderDarcula() ? 0.6f : 1.6f;
+                pixel[0] = (int) (pixel[0] * percent);
+                pixel[1] = (int) (pixel[1] * percent);
+                pixel[2] = (int) (pixel[2] * percent);
+                wr.setPixel(i, j, pixel);
+            }
+        }
+
+        BufferedImage new_image = ImageUtil.createImage(icon.getIconWidth(), icon.getIconHeight(), TYPE_INT_ARGB);
+        new_image.getGraphics().drawImage(image, 0, 0, null);
+
+        return new ImageIcon(new_image);
     }
 }
