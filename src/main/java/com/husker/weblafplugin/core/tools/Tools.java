@@ -241,10 +241,7 @@ public class Tools {
         for(int i = 0; i < wr.getWidth(); i++){
             for(int j = 0; j < wr.getHeight(); j++){
                 wr.getPixel(i, j, pixel);
-                float percent = UIUtil.isUnderDarcula() ? 0.6f : 1.6f;
-                pixel[0] = (int) (pixel[0] * percent);
-                pixel[1] = (int) (pixel[1] * percent);
-                pixel[2] = (int) (pixel[2] * percent);
+                pixel[3] = (int) (pixel[3] - pixel[3] * 0.3f);
                 wr.setPixel(i, j, pixel);
             }
         }
