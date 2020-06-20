@@ -20,12 +20,14 @@ import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.*;
+import com.intellij.psi.impl.search.AllClassesSearchExecutor;
 import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.InheritanceUtil;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.components.JBScrollPane;
+import com.intellij.util.Processor;
 import com.intellij.util.indexing.FileBasedIndex;
 import com.intellij.util.ui.ImageUtil;
 import com.intellij.util.ui.UIUtil;
@@ -57,32 +59,30 @@ public class Tools {
         return classes.toArray(new PsiClass[0]);
     }
 
-    public static void getExtendedClassesInLibraries(Project project, String clazz, Consumer<PsiClass> consumer){
+    public static void getExtendedClassesInLibraries(Project project, String clazz, Processor<? super PsiClass> processor){
         AllClassesGetter.processJavaClasses(
                 new PlainPrefixMatcher(""),
                 project,
                 GlobalSearchScope.allScope(project),
                 psiClass -> {
-                    if(clazz == null)
-                        consumer.accept(psiClass);
-                    else if(InheritanceUtil.isInheritor(psiClass, clazz))
-                        consumer.accept(psiClass);
-                    return true;
+                    if(clazz == null || InheritanceUtil.isInheritor(psiClass, clazz))
+                        return processor.process(psiClass);
+                    else
+                        return processor.process(null);
                 }
         );
     }
 
-    public static void getExtendedClassesInProject(Project project, String clazz, Consumer<PsiClass> consumer){
+    public static void getExtendedClassesInProject(Project project, String clazz,  Processor<? super PsiClass> processor){
         AllClassesGetter.processJavaClasses(
                 new PlainPrefixMatcher(""),
                 project,
                 GlobalSearchScope.projectScope(project),
                 psiClass -> {
-                    if(clazz == null)
-                        consumer.accept(psiClass);
-                    else if(InheritanceUtil.isInheritor(psiClass, clazz))
-                        consumer.accept(psiClass);
-                    return true;
+                    if(clazz == null || InheritanceUtil.isInheritor(psiClass, clazz))
+                        return processor.process(psiClass);
+                    else
+                        return processor.process(null);
                 }
         );
     }

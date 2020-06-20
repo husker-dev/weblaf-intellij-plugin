@@ -185,17 +185,4 @@ public class SkinCreationDialog extends DialogWrapper {
     public int getClassCreationType(){
         return class_create_type.getSelectedIndex();
     }
-
-    /*
-    public String getAuthor(){
-        return System.getProperty("user.name");
-    }
-    public String getId(){
-        return getTitle().toLowerCase().replaceAll("\\s",".");
-    }
-    public String getFileName(){
-        return getTitle().toLowerCase().replaceAll("\\s","-");
-    }
-
-     */
 }

@@ -29,7 +29,8 @@ public class ClassChooserDialog extends DialogWrapper {
     private final JPanel component;
     private final ArrayList<String> blackList = new ArrayList<>();
     private JBTabbedPane tabbedPane;
-    private int nowLoading = 0;
+
+    private boolean needToClose = false;
 
     public ClassChooserDialog(Project project, String title) {
         this(project, title, (String) null);
@@ -61,19 +62,27 @@ public class ClassChooserDialog extends DialogWrapper {
         addPage(new ClassListPage("Project", page -> {
             final ArrayList<PsiClass> found = new ArrayList<>();
             Tools.getExtendedClassesInProject(project, clazz, psiClass -> {
-                if(psiClass.getClassKind().equals(JvmClassKind.CLASS) && !PsiUtil.isAbstractClass(psiClass) && !blackList.contains(psiClass.getQualifiedName())){
+                if(needToClose)
+                    return false;
+
+                if(psiClass != null && psiClass.getClassKind().equals(JvmClassKind.CLASS) && !PsiUtil.isAbstractClass(psiClass) && !blackList.contains(psiClass.getQualifiedName())){
                     found.add(psiClass);
                     page.setListData(found.toArray(new PsiClass[0]));
                 }
+                return true;
             });
         }));
         addPage(new ClassListPage("All", page -> {
             final ArrayList<PsiClass> found = new ArrayList<>();
             Tools.getExtendedClassesInLibraries(project, clazz, psiClass -> {
-                if(psiClass.getClassKind().equals(JvmClassKind.CLASS) && !PsiUtil.isAbstractClass(psiClass) && !blackList.contains(psiClass.getQualifiedName())){
+                if(needToClose)
+                    return false;
+
+                if(psiClass != null && psiClass.getClassKind().equals(JvmClassKind.CLASS) && !PsiUtil.isAbstractClass(psiClass) && !blackList.contains(psiClass.getQualifiedName())){
                     found.add(psiClass);
                     page.setListData(found.toArray(new PsiClass[0]));
                 }
+                return true;
             });
         }));
 
@@ -208,14 +217,8 @@ public class ClassChooserDialog extends DialogWrapper {
             ApplicationManager.getApplication().executeOnPooledThread(() -> {
                 ApplicationManager.getApplication().runReadAction(() -> {
                     setSearchActive(true);
-                    nowLoading ++;
-                    setOKActionEnabled(false);
 
                     onLoad.accept(this);
-
-                    nowLoading --;
-                    if(nowLoading == 0)
-                        setOKActionEnabled(true);
 
                     setSearchActive(false);
                 });
@@ -263,6 +266,11 @@ public class ClassChooserDialog extends DialogWrapper {
             else
                 loadingText.setText(list.getItemsCount() + " classes found");
         }
+    }
+
+    public void doOKAction(){
+        super.doOKAction();
+        needToClose = true;
     }
 
 }
