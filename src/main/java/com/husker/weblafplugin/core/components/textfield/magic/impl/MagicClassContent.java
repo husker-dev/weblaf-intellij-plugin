@@ -1,6 +1,5 @@
 package com.husker.weblafplugin.core.components.textfield.magic.impl;
 
-import com.husker.weblafplugin.core.components.textfield.magic.impl.MagicIconContent;
 import com.husker.weblafplugin.core.tools.Tools;
 import com.intellij.ide.highlighter.JavaClassFileType;
 import com.intellij.openapi.project.Project;
@@ -13,6 +12,8 @@ public class MagicClassContent extends MagicIconContent {
 
     private Project project;
     private JLabel name, path;
+
+    private Icon defaultIcon;
 
     public MagicClassContent(Project project){
         this.project = project;
@@ -50,5 +51,17 @@ public class MagicClassContent extends MagicIconContent {
             ex.printStackTrace();
             setIcon(JavaClassFileType.INSTANCE.getIcon());
         }
+    }
+
+    public void setDefaultIcon(Icon icon){
+        defaultIcon = icon;
+        update(getMagicTextField().getText());
+    }
+
+    public void setIcon(Icon icon){
+        if(defaultIcon == null)
+            super.setIcon(icon);
+        else
+            super.setIcon(defaultIcon);
     }
 }

@@ -4,10 +4,16 @@ import com.alee.managers.style.XmlSkin;
 import com.husker.weblafplugin.core.components.textfield.magic.MagicTextField;
 import com.husker.weblafplugin.core.components.textfield.magic.impl.MagicClassContent;
 import com.husker.weblafplugin.core.dialogs.ClassChooserDialog;
-import com.intellij.openapi.project.Project;
+import com.husker.weblafplugin.core.tools.Tools;
+import com.intellij.icons.AllIcons;
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.roots.ProjectFileIndex;
+import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.VerticalFlowLayout;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiDirectory;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -16,15 +22,18 @@ import java.awt.*;
 
 public class SkinCreationDialog extends DialogWrapper {
 
-    private int text_width = 80;
+    private int text_width = 70;
     private JTextField title;
 
-    private JCheckBox class_create;
+    private ComboBox<String> class_create_type;
     private MagicTextField class_path;
     private JButton class_chooser_btn;
 
-    public SkinCreationDialog(Project project) {
-        super(project);
+    private AnActionEvent event;
+
+    public SkinCreationDialog(AnActionEvent event) {
+        super(event.getProject());
+        this.event = event;
 
         title = new JTextField(){{
             getDocument().addDocumentListener(new DocumentListener() {
@@ -38,21 +47,26 @@ public class SkinCreationDialog extends DialogWrapper {
                     event();
                 }
                 public void event() {
+                    updateClassPathText();
                     updateOkButton();
                 }
             });
         }};
 
-        class_create = new JCheckBox("Create new class automatically");
-        class_create.setSelected(true);
-        class_create.addActionListener(e -> {
+        class_create_type = new ComboBox<>();
+        class_create_type.addItem("Create automatically");
+        class_create_type.addItem("Choose existing");
+        class_create_type.addItem("Do nothing");
+        class_create_type.setSelectedIndex(0);
+        class_create_type.addActionListener(e -> {
+            if(class_create_type.getSelectedIndex() != 0)
+                class_path.setText("");
+            updateClassPathButtons();
+            updateClassPathText();
             updateOkButton();
-            class_path.setEnabled(!class_create.isSelected());
-            class_chooser_btn.setEnabled(!class_create.isSelected());
         });
 
-        class_path = new MagicTextField(new MagicClassContent(project));
-        class_path.setEnabled(!class_create.isSelected());
+        class_path = new MagicTextField(new MagicClassContent(event.getProject()));
         class_path.getDocument().addDocumentListener(new DocumentListener() {
             public void changedUpdate(DocumentEvent e) {
                 event();
@@ -71,29 +85,54 @@ public class SkinCreationDialog extends DialogWrapper {
         class_chooser_btn = new JButton("...");
         class_chooser_btn.setPreferredSize(new Dimension(30, 22));
         class_chooser_btn.addActionListener(e -> {
-            PsiClass clazz = new ClassChooserDialog(project, "Select Skin Class", XmlSkin.class).getPsiClass();
-
+            PsiClass clazz = new ClassChooserDialog(event.getProject(), "Select Skin Class", XmlSkin.class).getPsiClass();
             if (clazz != null)
                 class_path.setText(clazz.getQualifiedName());
         });
-        class_chooser_btn.setEnabled(!class_create.isSelected());
 
+        updateClassPathButtons();
+        updateClassPathText();
         updateOkButton();
 
         init();
         setTitle("New WebLaF Skin");
     }
 
+    private void updateClassPathButtons(){
+        if(class_create_type.getSelectedIndex() == 0){
+            class_path.setEnabled(false);
+            class_chooser_btn.setEnabled(false);
+
+            MagicClassContent content = (MagicClassContent) class_path.getMagicContent();
+            content.setDefaultIcon(AllIcons.Nodes.Class);
+        }else{
+            MagicClassContent content = (MagicClassContent) class_path.getMagicContent();
+            content.setDefaultIcon(null);
+        }
+        if(class_create_type.getSelectedIndex() == 1){
+            class_path.setEnabled(true);
+            class_chooser_btn.setEnabled(true);
+        }
+        if(class_create_type.getSelectedIndex() == 2){
+            class_path.setEnabled(false);
+            class_chooser_btn.setEnabled(false);
+        }
+    }
+
+    private void updateClassPathText(){
+        if(class_create_type.getSelectedIndex() == 0) {
+            PsiDirectory directory = Tools.getSelectedDirectory(event);
+            VirtualFile src_root = ProjectFileIndex.getInstance(event.getProject()).getSourceRootForFile(directory.getVirtualFile());
+
+            String class_path = directory.getVirtualFile().getPath().replace(src_root.getPath(), "").substring(1).replace("/", ".");
+            String class_name = Tools.formatClassName(title.getText().isEmpty() ? "MySkin" : title.getText().toLowerCase());
+
+            this.class_path.setText(class_path + "." + class_name);
+        }
+    }
+
     private void updateOkButton(){
-        if(title.getText().isEmpty()){
-            setOKActionEnabled(false);
-            return;
-        }
-        if(!class_create.isSelected() && class_path.getText().isEmpty()){
-            setOKActionEnabled(false);
-            return;
-        }
-        setOKActionEnabled(true);
+        setOKActionEnabled(!title.getText().isEmpty());
     }
 
     protected JComponent createCenterPanel() {
@@ -102,8 +141,8 @@ public class SkinCreationDialog extends DialogWrapper {
 
         panel.setLayout(new VerticalFlowLayout());
         panel.add(createParameter("Title", title));
-        panel.add(createParameter(class_create));
-        panel.add(createParameter("Class", class_path, class_chooser_btn));
+        panel.add(createParameter("Class", class_create_type));
+        panel.add(createParameter("Path", class_path, class_chooser_btn));
 
         return panel;
     }
@@ -111,6 +150,7 @@ public class SkinCreationDialog extends DialogWrapper {
     private JPanel createParameter(JComponent component){
         return createParameter("", component);
     }
+
     private JPanel createParameter(String name, JComponent component){
         return new JPanel(){{
             setLayout(new BorderLayout());
@@ -118,6 +158,7 @@ public class SkinCreationDialog extends DialogWrapper {
             add(component);
         }};
     }
+
     private JPanel createParameter(String name, JComponent component, JComponent right_component){
         return new JPanel(){{
             setLayout(new BorderLayout());
@@ -134,18 +175,18 @@ public class SkinCreationDialog extends DialogWrapper {
     }
 
     public String getTitle(){
-        if(title.getText().replaceAll("\\s",".").equals(""))
-            return "Example";
         return title.getText();
     }
-    public String getXmlStyleClass(){
-        if(class_path.getText().replaceAll("\\s",".").equals(""))
-            return "com.example.XmlSkin";
+
+    public String getClassPath(){
         return class_path.getText();
     }
-    public boolean isAutoCreateClassFile(){
-        return class_create.isSelected();
+
+    public int getClassCreationType(){
+        return class_create_type.getSelectedIndex();
     }
+
+    /*
     public String getAuthor(){
         return System.getProperty("user.name");
     }
@@ -155,4 +196,6 @@ public class SkinCreationDialog extends DialogWrapper {
     public String getFileName(){
         return getTitle().toLowerCase().replaceAll("\\s","-");
     }
+
+     */
 }

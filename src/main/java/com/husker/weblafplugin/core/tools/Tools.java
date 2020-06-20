@@ -18,6 +18,7 @@ import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.JarFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.*;
 import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -116,7 +117,6 @@ public class Tools {
                 GlobalSearchScope.allScope(project)
         ).toArray(new VirtualFile[0]);
     }
-
 
     public static PsiDirectory getSelectedDirectory(AnActionEvent event){
         return LangDataKeys.IDE_VIEW.getData(event.getDataContext()).getOrChooseDirectory();
@@ -253,5 +253,14 @@ public class Tools {
         new_image.getGraphics().drawImage(image, 0, 0, null);
 
         return new ImageIcon(new_image);
+    }
+
+    public static String formatClassName(String title){
+        StringBuilder out = new StringBuilder();
+
+        for(String word : title.split(" "))
+            out.append(word.substring(0, 1).toUpperCase()).append(word.substring(1));
+
+        return out.toString();
     }
 }

@@ -109,6 +109,9 @@ public abstract class SkinEditor extends JPanel {
                 if(clazz == null)
                     return null;
 
+                if(clazz.getConstructors().length == 0)
+                    return null;
+
                 if(clazz.getConstructors()[0].getBody() == null)
                     clazz = (PsiClass) clazz.getNavigationElement();
 

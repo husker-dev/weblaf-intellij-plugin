@@ -123,4 +123,8 @@ public class MagicTextField extends JBTextField {
     public boolean isFocused(){
         return focused;
     }
+
+    public MagicContent getMagicContent(){
+        return content;
+    }
 }
