@@ -44,9 +44,7 @@ public abstract class Parameter extends JPanel implements VariableApplier {
 
     public abstract void onValueApplying(Object value);
 
-    public SkinEditor getSkinEditor(){
-        return SkinEditorManager.get(this);
-    }
+
 
     public abstract boolean haveErrors();
 

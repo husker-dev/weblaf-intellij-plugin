@@ -1,7 +1,9 @@
 package com.husker.weblafplugin.skin.variables.impl;
 
+import com.husker.weblafplugin.core.editor.SimpleXmlParameterEditor;
 import com.husker.weblafplugin.skin.include.IncludeElement;
 import com.husker.weblafplugin.skin.SkinEditor;
+import com.husker.weblafplugin.skin.managers.SkinEditorManager;
 import com.husker.weblafplugin.skin.variables.XmlVariable;
 import com.intellij.openapi.project.Project;
 import org.jdom.Element;
@@ -10,7 +12,7 @@ import java.util.ArrayList;
 
 public class IncludeVariable extends XmlVariable {
 
-    public IncludeVariable(SkinEditor editor) {
+    public IncludeVariable(SimpleXmlParameterEditor editor) {
         super(editor);
     }
 
@@ -26,9 +28,9 @@ public class IncludeVariable extends XmlVariable {
     public Object getValue() {
         ArrayList<IncludeElement> elements = new ArrayList<>();
 
-        SkinEditor skinEditor = getSkinEditor();
-        Project project = skinEditor.getProject();
-        String resource_path = skinEditor.Resources.getResourcePath();
+        SimpleXmlParameterEditor editor = getEditor();
+        Project project = editor.getProject();
+        String resource_path = SkinEditorManager.Resources.getResourcePath(editor);
 
         for(Element element : getElement().getChildren())
             if (element.getName().equals("include"))

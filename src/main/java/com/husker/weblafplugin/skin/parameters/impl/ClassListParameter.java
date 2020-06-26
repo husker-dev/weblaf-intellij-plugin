@@ -2,6 +2,8 @@ package com.husker.weblafplugin.skin.parameters.impl;
 
 import com.husker.weblafplugin.core.components.list.classes.ClassList;
 import com.husker.weblafplugin.core.dialogs.ClassChooserDialog;
+import com.husker.weblafplugin.core.editor.SimpleXmlParameterEditor;
+import com.husker.weblafplugin.core.managers.SimpleXmlParameterEditorManager;
 import com.husker.weblafplugin.skin.SkinEditor;
 import com.husker.weblafplugin.skin.components.parameter.Parameter;
 import com.husker.weblafplugin.skin.variables.ValueChangedListener;
@@ -25,7 +27,7 @@ public class ClassListParameter extends Parameter {
     }
 
     public void onInit(){
-        SkinEditor editor = getSkinEditor();
+        SimpleXmlParameterEditor editor = SimpleXmlParameterEditorManager.getByParameterContext(this);
         Project project = editor.getProject();
 
         ToolbarDecorator decorator = ToolbarDecorator.createDecorator(list = new ClassList(project));

@@ -1,198 +1,113 @@
 package com.husker.weblafplugin.skin;
 
-import com.husker.weblafplugin.skin.managers.ParameterManager;
-import com.husker.weblafplugin.core.tools.Listeners;
-import com.husker.weblafplugin.skin.managers.SkinEditorManager;
-import com.husker.weblafplugin.core.tools.Tools;
-import com.husker.weblafplugin.core.tools.XmlTools;
-import com.intellij.javaee.ExternalResourceManager;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
+import com.alee.managers.style.XmlSkin;
+import com.husker.weblafplugin.core.editor.SimpleXmlParameterEditor;
+import com.husker.weblafplugin.core.managers.ParameterManager;
+import com.husker.weblafplugin.skin.components.IconViewer;
+import com.husker.weblafplugin.skin.components.parameter.Parameter;
+import com.husker.weblafplugin.skin.components.parameter.ParameterBlock;
+import com.husker.weblafplugin.skin.parameters.LabelParameter;
+import com.husker.weblafplugin.skin.parameters.TextParameter;
+import com.husker.weblafplugin.skin.parameters.impl.*;
+import com.husker.weblafplugin.skin.variables.impl.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.VerticalFlowLayout;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.source.PsiJavaCodeReferenceElementImpl;
-import com.intellij.psi.impl.source.tree.ChildRole;
-import com.intellij.psi.impl.source.tree.java.PsiClassObjectAccessExpressionImpl;
-import com.intellij.psi.impl.source.tree.java.PsiExpressionStatementImpl;
-import org.jdom.Element;
+import icons.MyFileIcons;
 
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.function.Consumer;
+import java.awt.*;
 
-public abstract class SkinEditor extends JPanel {
 
-    private Project project;
-    private Element skin_head;
-    private VirtualFile file;
+public class SkinEditor extends SimpleXmlParameterEditor {
 
-    private Element old_file;
+    public static final int IMAGE_SIZE = 90;
+    public static final int IMAGE_PARAMETER_SIZE = Parameter.DEFAULT_WIDTH - IMAGE_SIZE - 35;
 
-    private final Consumer<FileEditorManagerEvent> selectedFileEditorChangedListener;
+    private IconViewer p_large_icon = new IconViewer(IMAGE_SIZE){{
+        setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+    }};
+    private TextParameter p_title = new TextParameter("Title", IMAGE_PARAMETER_SIZE);
+    private TextParameter p_author = new TextParameter("Author", IMAGE_PARAMETER_SIZE);
+    private ImageChooserParameter p_icon = new ImageChooserParameter("Icon", IMAGE_PARAMETER_SIZE);
+    private TextParameter p_description = new TextParameter("Description");
 
-    public Resources Resources = new Resources();
+    private ClassChooserParameter p_class = new ClassChooserParameter("Class", XmlSkin.class){{
+        addBlackListClass("com.alee.managers.style.XmlSkin");
+    }};
+    private TextButtonParameter p_id = new TextButtonParameter("Id", "Auto");
+    private SupportedSystemsParameter p_supported_systems = new SupportedSystemsParameter("OS support");
 
-    public SkinEditor(Project project, VirtualFile file){
-        this.project = project;
-        this.file = file;
-        setLayout(new VerticalFlowLayout());
+    private LabelParameter p_resources_path = new LabelParameter("Path");
 
-        // TODO: move to plugin init action!!!
-        ApplicationManager.getApplication().runWriteAction(() -> {
-            ExternalResourceManager.getInstance().addResource("http://weblookandfeel.com/XmlSkin", "validation/XmlSkin.xsd");
-            ExternalResourceManager.getInstance().addResource("http://weblookandfeel.com/XmlSkinExtension", "validation/XmlSkinExtension.xsd");
-        });
+    private IncludeListParameter p_include = new IncludeListParameter("Include");
+    private ClassListParameter p_iconSet = new ClassListParameter("Icon sets");
 
-        ParameterManager.markAsParameterContainer(this);
+    public SkinEditor(Project project, VirtualFile file) {
+        super(project, file);
 
-        // File editor changed listener
-        selectedFileEditorChangedListener = event -> {
-            try {
-                if (event.getNewEditor() != null && event.getNewEditor().getClass() == SkinFileEditor.class) {
-                    try {
-                        reloadSkinElement();
+        setTitle("Skin parameters");
+        setIcon(MyFileIcons.SKIN);
+        setPreferredTabIndex(1);
 
-                        // If xml changed
-                        if (old_file == null || !XmlTools.areEqual(skin_head, old_file))
-                            ParameterManager.reloadVariables(this);
+        add(new ParameterBlock("Information"){{
+            add(new JPanel(){{
+                setLayout(new BorderLayout());
+                setBorder(BorderFactory.createEmptyBorder(0, 0, -5, 0));
 
-                        old_file = skin_head;
-                    } catch (NullPointerException np) {
-                        // Ignore
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        // TODO Make error screen (or not...)
-                    }
-                }
-            }catch (Exception ex){
-                ex.printStackTrace();
-            }
-        };
-        Listeners.selectedFileEditorChanged(project, selectedFileEditorChangedListener);
+                add(new JPanel(){{
+                    setLayout(new VerticalFlowLayout(0, 5));
+                    add(p_title);
+                    add(p_author);
+                    add(p_icon);
+                }}, BorderLayout.WEST);
+                add(p_large_icon);
+            }});
 
-        reloadSkinElement();
+
+            add(p_description);
+        }});
+
+        add(new ParameterBlock("Settings"){{
+            add(p_class);
+            add(p_id);
+            add(p_supported_systems);
+        }});
+
+        add(new ParameterBlock("Resources"){{
+            add(p_resources_path);
+            add(p_include);
+            add(p_iconSet);
+        }});
+
+        // Binding
+        ParameterManager.register(p_large_icon, new IconVariable(SkinEditor.this));
+        ParameterManager.register(p_title, new TitleVariable(SkinEditor.this));
+        ParameterManager.register(p_author, new AuthorVariable(SkinEditor.this));
+        ParameterManager.register(p_icon, new IconVariable(SkinEditor.this));
+        ParameterManager.register(p_description, new DescriptionVariable(SkinEditor.this));
+
+        ParameterManager.register(p_class, new ClassVariable(SkinEditor.this));
+        ParameterManager.register(p_id, new IdVariable(SkinEditor.this));
+        ParameterManager.register(p_supported_systems, new SupportedSystemVariable(SkinEditor.this));
+
+        ParameterManager.register(p_resources_path, new ResourcePathVariable(SkinEditor.this));
+        ParameterManager.register(p_include, new IncludeVariable(SkinEditor.this));
+        ParameterManager.register(p_iconSet, new IconSetsVariable(SkinEditor.this));
+
+        ParameterManager.init(this);
+
+        p_id.addButtonListener(e -> p_id.setText(generateId()));
     }
 
-    public Element getSkinElement(){
-        return skin_head;
-    }
-
-    public Project getProject(){
-        return project;
-    }
-
-    public void reloadSkinElement(){
-        try {
-            skin_head = XmlTools.getElement(Tools.getPsi(project, file).getText());
-        }catch (Exception ex){
-            ex.printStackTrace();
-        }
-    }
-
-    public void setSkinElement(Element element){
-        Tools.writeText(file, XmlTools.formatElement(element));
-
-        skin_head = element;
-        old_file = skin_head;
-    }
-
-    public class Resources {
-        public String getClassPath(){
-            return getPsiClass().getQualifiedName();
-        }
-
-        public PsiClass getPsiClass(){
-            try {
-                PsiClass clazz = SkinEditor.this.getPsiClass();
-                if(clazz == null)
-                    return null;
-
-                if(clazz.getConstructors().length == 0)
-                    return null;
-
-                if(clazz.getConstructors()[0].getBody() == null)
-                    clazz = (PsiClass) clazz.getNavigationElement();
-
-                if(clazz.getConstructors()[0].getBody() == null)
-                    return getCompiledClassResourcePath(clazz);
-
-                PsiExpressionStatementImpl constructor = (PsiExpressionStatementImpl) clazz.getConstructors()[0].getBody().getStatements()[0];
-
-                PsiMethodCallExpression super_call = (PsiMethodCallExpression)constructor.getExpression();
-                PsiNewExpression resource_instance = (PsiNewExpression)super_call.getArgumentList().getExpressions()[0];
-
-                String resource_class_name = resource_instance.getClassOrAnonymousClassReference().getQualifiedName();
-
-                if(resource_class_name.equals("com.alee.api.resource.ClassResource")){
-                    PsiClassObjectAccessExpressionImpl class_resource_class_expression = (PsiClassObjectAccessExpressionImpl) resource_instance.getArgumentList().getExpressions()[0];
-
-                    PsiTypeElement class_resource_class_type = (PsiTypeElement) class_resource_class_expression.findChildByRole(ChildRole.TYPE);
-                    PsiJavaCodeReferenceElementImpl class_resource_class_reference = (PsiJavaCodeReferenceElementImpl) class_resource_class_type.getChildren()[0];
-
-                    return Tools.getClassByPath(project, class_resource_class_reference.getCanonicalText());
-                }
-                return null;
-            }catch (Exception ex){
-                ex.printStackTrace();
-                return null;
-            }
-        }
-
-        public String getResourcePath(){
-            return Tools.getClassResourcePath(getPsiClass());
-        }
-    }
-
-    private PsiClass getCompiledClassResourcePath(PsiClass clazz){
-        PsiJavaFile file = (PsiJavaFile) clazz.getContainingFile();
-        String text = file.getText();
-
-        String class_name = text.split("ClassResource\\(")[1].split("\\.class")[0];
-
-        ArrayList<String> folders = new ArrayList<>();
-        folders.add(text.split("package")[1].split(";")[0].trim());
-
-        // Getting all package imports
-        String[] import_split = text.split("import");
-        for(int i = 1; i < import_split.length; i++) {
-            String import_text = import_split[i].split(";")[0].trim();
-            if(import_text.endsWith(".*"))
-                folders.add(import_text);
-        }
-
-        // Testing for single class import
-        for(int i = 1; i < import_split.length; i++) {
-            String import_text = import_split[i].split(";")[0].trim();
-            if(import_text.split("\\.")[import_text.split("\\.").length - 1].equals(class_name))
-                return Tools.getClassByPath(project, import_text);
-        }
-        // Testing folders
-        for(String folder : folders){
-            PsiClass found;
-            if(folder.contains(".*"))
-                found = Tools.getClassByPath(project, folder.replace("*", class_name));
-            else
-                found = Tools.getClassByPath(project, folder + "." + class_name);
-            if(found != null)
-                return found;
-        }
-        // Testing class_name itself
-        return Tools.getClassByPath(project, class_name);
-    }
-
-    public PsiClass getPsiClass(){
-        return Tools.getClassByPath(project, getClassPath());
-    }
-
-    public String getClassPath(){
-        return getSkinElement().getChildText("class", getSkinElement().getNamespace());
-    }
-
-    public void dispose(){
-        ParameterManager.disposeContainer(this);
-        SkinEditorManager.dispose(this);
+    public String generateId(){
+        String id = "";
+        if(!p_author.getText().replaceAll("\\s", "").equals(""))
+            id = p_author.getText().toLowerCase().split(" ")[0] + ".";
+        else
+            id = "";
+        id += p_title.getText().toLowerCase().replaceAll("\\s", ".");
+        return id;
     }
 
 }

@@ -1,5 +1,6 @@
 package com.husker.weblafplugin.skin.variables;
 
+import com.husker.weblafplugin.core.editor.SimpleXmlParameterEditor;
 import com.husker.weblafplugin.skin.SkinEditor;
 import org.jdom.Element;
 
@@ -7,7 +8,7 @@ public class SimpleXmlVariable extends XmlVariable {
 
     private String head;
 
-    public SimpleXmlVariable(SkinEditor editor, String head){
+    public SimpleXmlVariable(SimpleXmlParameterEditor editor, String head){
         super(editor);
         this.head = head;
     }

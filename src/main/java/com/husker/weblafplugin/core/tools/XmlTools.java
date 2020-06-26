@@ -1,5 +1,6 @@
 package com.husker.weblafplugin.core.tools;
 
+import com.husker.weblafplugin.core.WLF_TypeChecker;
 import org.jdom.*;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
@@ -10,6 +11,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 
 public class XmlTools {
 
@@ -99,15 +101,22 @@ public class XmlTools {
         return String.join("", out.toArray(new String[0]));
     }
 
-    public static String formatElement(Element element){
-        String skin_settings_group = "Skin settings";
-        String skin_information_group = "Skin information";
+    public static String formatElement(Element element, int fileType){
+        HashMap<Integer, String> fileTypeNames = new HashMap<>();
+        fileTypeNames.put(WLF_TypeChecker.EXTENSION, "Extension");
+        fileTypeNames.put(WLF_TypeChecker.SKIN, "Skin");
+        fileTypeNames.put(WLF_TypeChecker.STYLE, "Style");
+
+        String type = fileTypeNames.get(fileType);
+
+        String settings_group = type + " settings";
+        String information_group = type + " information";
         String icon_set_group = "Icon sets";
         String include_group = "Styles placed in strict initialization order";
         String styles_group = "Styles";
 
-        setGroup(element, skin_settings_group, new String[]{"id", "class", "supportedSystems"});
-        setGroup(element, skin_information_group, new String[]{"icon", "title", "description", "author"});
+        setGroup(element, settings_group, new String[]{"id", "class", "extends", "supportedSystems"});
+        setGroup(element, information_group, new String[]{"icon", "title", "description", "author"});
         setGroup(element, icon_set_group, "iconSet");
         setGroup(element, include_group, "include");
         setGroup(element, styles_group, "style");

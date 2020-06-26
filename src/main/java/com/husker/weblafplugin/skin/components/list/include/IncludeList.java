@@ -1,16 +1,17 @@
-package com.husker.weblafplugin.skin.components.list;
+package com.husker.weblafplugin.skin.components.list.include;
 
 import com.husker.weblafplugin.core.components.list.FileList;
+import com.husker.weblafplugin.core.editor.SimpleXmlParameterEditor;
 import com.husker.weblafplugin.skin.include.IncludeElement;
-import com.husker.weblafplugin.skin.SkinEditor;
+import com.husker.weblafplugin.skin.managers.SkinEditorManager;
 
 import javax.swing.*;
 
 public class IncludeList extends FileList<IncludeElement> {
 
-    private final SkinEditor editor;
+    private final SimpleXmlParameterEditor editor;
 
-    public IncludeList(SkinEditor editor) {
+    public IncludeList(SimpleXmlParameterEditor editor) {
         super();
         this.editor = editor;
         setCellRenderer(new IncludeListCellRenderer());
@@ -18,7 +19,7 @@ public class IncludeList extends FileList<IncludeElement> {
     }
 
     protected void updateCachedData(){
-        String path = editor.Resources.getResourcePath();
+        String path = SkinEditorManager.Resources.getResourcePath(editor);
         for (IncludeElement element : getContent()) {
             element.setResourcePath(path);
             cache("errors", element, element.isExist());
@@ -38,7 +39,7 @@ public class IncludeList extends FileList<IncludeElement> {
         return (Icon) getCached("icons", element);
     }
 
-    public SkinEditor getSkinEditor(){
+    public SimpleXmlParameterEditor getSkinEditor(){
         return editor;
     }
 }

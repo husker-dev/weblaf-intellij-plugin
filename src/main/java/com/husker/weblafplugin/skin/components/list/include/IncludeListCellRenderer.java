@@ -1,8 +1,9 @@
-package com.husker.weblafplugin.skin.components.list;
+package com.husker.weblafplugin.skin.components.list.include;
 
 import com.husker.weblafplugin.core.components.list.FileCellRenderer;
 import com.husker.weblafplugin.core.tools.Tools;
 import com.husker.weblafplugin.skin.include.IncludeElement;
+import com.husker.weblafplugin.skin.managers.SkinEditorManager;
 import com.intellij.psi.PsiClass;
 
 import javax.swing.*;
@@ -39,7 +40,7 @@ public class IncludeListCellRenderer extends FileCellRenderer<IncludeElement> {
         if(getElement().getNearClass() != null || getElement().getFullPath().contains(".jar")) {
             PsiClass psiClass;
             if (getElement().getNearClass() == null)
-                psiClass = ((IncludeList) getList()).getSkinEditor().Resources.getPsiClass();
+                psiClass = SkinEditorManager.Resources.getPsiClass(((IncludeList) getList()).getSkinEditor());
             else
                 psiClass = Tools.getClassByPath(((IncludeList) getList()).getSkinEditor().getProject(), getElement().getNearClass());
             return Tools.getModuleIcon(psiClass);

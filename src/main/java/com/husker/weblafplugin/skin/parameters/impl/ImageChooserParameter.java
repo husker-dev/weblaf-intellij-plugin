@@ -1,6 +1,8 @@
 package com.husker.weblafplugin.skin.parameters.impl;
 
 import com.husker.weblafplugin.core.components.textfield.magic.impl.MagicPathContent;
+import com.husker.weblafplugin.core.editor.SimpleXmlParameterEditor;
+import com.husker.weblafplugin.core.managers.SimpleXmlParameterEditorManager;
 import com.husker.weblafplugin.core.tools.Tools;
 import com.husker.weblafplugin.skin.parameters.impl.ResourceChooserParameter;
 
@@ -13,7 +15,8 @@ public class ImageChooserParameter extends ResourceChooserParameter {
     public void onInit() {
         super.onInit();
 
-        textField.setMagicPanel(new MagicPathContent(getSkinEditor().getProject()));
+        SimpleXmlParameterEditor editor = SimpleXmlParameterEditorManager.getByParameterContext(this);
+        textField.setMagicPanel(new MagicPathContent(editor.getProject()));
     }
 
     public ImageChooserParameter(String name) {

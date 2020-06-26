@@ -2,6 +2,8 @@ package com.husker.weblafplugin.skin.parameters.impl;
 
 import com.husker.weblafplugin.core.components.textfield.magic.impl.MagicClassContent;
 import com.husker.weblafplugin.core.dialogs.ClassChooserDialog;
+import com.husker.weblafplugin.core.editor.SimpleXmlParameterEditor;
+import com.husker.weblafplugin.core.managers.SimpleXmlParameterEditorManager;
 import com.husker.weblafplugin.core.tools.Tools;
 import com.intellij.psi.PsiClass;
 
@@ -22,11 +24,12 @@ public class ClassChooserParameter extends TextButtonParameter {
 
     public void onInit(){
         super.onInit();
+        SimpleXmlParameterEditor editor = SimpleXmlParameterEditorManager.getByParameterContext(this);
 
-        textField.setMagicPanel(new MagicClassContent(getSkinEditor().getProject()));
+        textField.setMagicPanel(new MagicClassContent(editor.getProject()));
 
         addButtonListener(e -> {
-            ClassChooserDialog dialog = new ClassChooserDialog(getSkinEditor().getProject(), "Select Skin Class", clazz);
+            ClassChooserDialog dialog = new ClassChooserDialog(editor.getProject(), "Select Skin Class", clazz);
             for(String class_path : blackList)
                 dialog.addBlackListClass(class_path);
 
@@ -37,7 +40,8 @@ public class ClassChooserParameter extends TextButtonParameter {
     }
 
     public PsiClass getPsiClass(){
-        return Tools.getClassByPath(getSkinEditor().getProject(), getText());
+        SimpleXmlParameterEditor editor = SimpleXmlParameterEditorManager.getByParameterContext(this);
+        return Tools.getClassByPath(editor.getProject(), getText());
     }
 
     public void addClassChooserListener(ClassChooserListener listener){

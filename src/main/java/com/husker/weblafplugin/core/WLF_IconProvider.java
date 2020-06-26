@@ -8,9 +8,11 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
-import static com.husker.weblafplugin.core.WebLaFTypeChecker.*;
+import java.util.List;
 
-public class WebLaFIconProvider extends IconProvider {
+import static com.husker.weblafplugin.core.WLF_TypeChecker.*;
+
+public class WLF_IconProvider extends IconProvider {
 
     public Icon getIcon(@NotNull PsiElement element, int flags) {
         try {
@@ -18,18 +20,17 @@ public class WebLaFIconProvider extends IconProvider {
             if (containingFile == null || !containingFile.getName().endsWith(".xml"))
                 return null;
 
-            //boolean isDark = StartupUiUtil.isUnderDarcula();
+            List<Integer> types = WLF_TypeChecker.getTypes(containingFile.getText());
 
-            switch (WebLaFTypeChecker.getType(containingFile.getText())) {
-                case SKIN:
-                    return MyFileIcons.SKIN;
-                case STYLE:
-                    return MyFileIcons.STYLE;
-                case SKIN_AND_STYLE:
-                    return MyFileIcons.MIXED;
-                case UNKNOWN:
-                    return null;
-            }
+            if(types.contains(SKIN) && types.contains(STYLE))
+                return MyFileIcons.MIXED;
+            if(types.contains(EXTENSION))
+                return MyFileIcons.EXTENSION;
+            if(types.contains(SKIN))
+                return MyFileIcons.SKIN;
+            if(types.contains(STYLE))
+                return MyFileIcons.STYLE;
+
             return null;
         }catch (Exception ex){
             return null;

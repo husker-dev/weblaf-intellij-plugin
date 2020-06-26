@@ -1,26 +1,25 @@
 package com.husker.weblafplugin.skin.variables.impl;
 
-
 import com.husker.weblafplugin.core.editor.SimpleXmlParameterEditor;
-import com.husker.weblafplugin.skin.SkinEditor;
+import com.husker.weblafplugin.skin.managers.SkinEditorManager;
 import com.husker.weblafplugin.skin.variables.XmlVariable;
+import com.intellij.openapi.project.Project;
 import org.jdom.Element;
 
 import java.util.ArrayList;
 
-public class IconSetsVariable extends XmlVariable {
+public class ExtendsVariable extends XmlVariable {
 
-    public IconSetsVariable(SimpleXmlParameterEditor editor) {
+
+    public ExtendsVariable(SimpleXmlParameterEditor editor) {
         super(editor);
     }
 
     public void setValue(Object object) {
-        getElement().removeChildren("iconSet", getNamespace());
+        getElement().removeChildren("extends", getNamespace());
         if(object != null) {
             for (String element : (String[]) object)
-                getElement().addContent(new Element("iconSet", getNamespace()) {{
-                    setText(element);
-                }});
+                getElement().addContent(element);
         }
         saveElement();
     }
@@ -28,8 +27,9 @@ public class IconSetsVariable extends XmlVariable {
     public Object getValue() {
         ArrayList<String> elements = new ArrayList<>();
 
+
         for(Element element : getElement().getChildren())
-            if (element.getName().equals("iconSet"))
+            if (element.getName().equals("extends"))
                 elements.add(element.getText());
 
         return elements.toArray(new String[0]);

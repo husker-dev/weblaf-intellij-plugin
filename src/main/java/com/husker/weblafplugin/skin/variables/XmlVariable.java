@@ -1,34 +1,35 @@
 package com.husker.weblafplugin.skin.variables;
 
+import com.husker.weblafplugin.core.editor.SimpleXmlParameterEditor;
 import com.husker.weblafplugin.skin.SkinEditor;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
 public abstract class XmlVariable extends Variable {
 
-    private SkinEditor editor;
+    private SimpleXmlParameterEditor editor;
 
-    public XmlVariable(SkinEditor editor){
+    public XmlVariable(SimpleXmlParameterEditor editor){
         this.editor = editor;
     }
 
     public Element getElement(){
-        return editor.getSkinElement();
+        return editor.getRootElement();
     }
 
     public void setElement(Element element){
-        editor.setSkinElement(element);
+        editor.setRootElement(element);
     }
 
     public Namespace getNamespace(){
         return getElement().getNamespace();
     }
 
-    public SkinEditor getSkinEditor(){
+    public SimpleXmlParameterEditor getEditor(){
         return editor;
     }
 
     public void saveElement(){
-        getSkinEditor().setSkinElement(getElement());
+        getEditor().setRootElement(getElement());
     }
 }

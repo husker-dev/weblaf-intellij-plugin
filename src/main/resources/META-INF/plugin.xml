@@ -11,11 +11,11 @@
     <depends>com.intellij.modules.java</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <iconProvider implementation="com.husker.weblafplugin.core.WebLaFIconProvider"/>
-        <fileEditorProvider implementation="com.husker.weblafplugin.skin.SkinFileEditorProvider"/>
+        <iconProvider implementation="com.husker.weblafplugin.core.WLF_IconProvider"/>
+        <fileEditorProvider implementation="com.husker.weblafplugin.core.editor.WLF_FileEditorProvider"/>
     </extensions>
 
-    <idea-version since-build="193.1784"/>
+    <idea-version since-build="193.2956.37"/>
 
     <actions>
 
@@ -23,6 +23,9 @@
             <add-to-group group-id="NewGroup" anchor="last"/>
         </action>
         <action id="weblaf.creation.style" class="com.husker.weblafplugin.style.actions.NewStyleFileAction" text="WebLaF Style" icon="MyFileIcons.STYLE">
+            <add-to-group group-id="NewGroup" anchor="last"/>
+        </action>
+        <action id="weblaf.creation.extension" class="com.husker.weblafplugin.extension.actions.NewExtensionFileAction" text="WebLaF Extension" icon="MyFileIcons.EXTENSION">
             <add-to-group group-id="NewGroup" anchor="last"/>
         </action>
     </actions>

@@ -1,4 +1,4 @@
-package com.husker.weblafplugin.skin.managers;
+package com.husker.weblafplugin.core.managers;
 
 
 import com.husker.weblafplugin.skin.components.VariableApplier;

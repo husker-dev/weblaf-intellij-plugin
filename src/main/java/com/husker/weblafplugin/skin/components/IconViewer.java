@@ -32,7 +32,7 @@ public class IconViewer extends JLabel implements VariableApplier {
     }
 
     public String getResourcePath(){
-        return SkinEditorManager.get(this).Resources.getResourcePath();
+        return SkinEditorManager.Resources.getResourcePath(SkinEditorManager.getByParameterContext(this));
     }
 
     public void setValue(Object value) {

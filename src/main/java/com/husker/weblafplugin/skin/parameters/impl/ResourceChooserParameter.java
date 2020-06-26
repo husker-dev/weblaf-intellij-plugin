@@ -1,6 +1,8 @@
 package com.husker.weblafplugin.skin.parameters.impl;
 
 import com.husker.weblafplugin.core.dialogs.FileListDialog;
+import com.husker.weblafplugin.core.editor.SimpleXmlParameterEditor;
+import com.husker.weblafplugin.core.managers.SimpleXmlParameterEditorManager;
 import com.husker.weblafplugin.skin.managers.SkinEditorManager;
 import com.husker.weblafplugin.core.tools.Tools;
 import com.intellij.openapi.fileTypes.FileType;
@@ -21,9 +23,10 @@ public class ResourceChooserParameter extends TextButtonParameter {
         super.onInit();
 
         addButtonListener(e -> {
-            String resource_folder = getSkinEditor().Resources.getResourcePath();
+            SimpleXmlParameterEditor editor = SimpleXmlParameterEditorManager.getByParameterContext(this);
+            String resource_folder = SkinEditorManager.Resources.getResourcePath(editor);
 
-            PsiFile psiFile = new FileListDialog(getSkinEditor().getProject(), fileType, resource_folder).getPsiFile();
+            PsiFile psiFile = new FileListDialog(editor.getProject(), fileType, resource_folder).getPsiFile();
             if(psiFile != null){
                 String file = psiFile.getVirtualFile().getPath();
                 if(resource_folder != null)
@@ -38,7 +41,7 @@ public class ResourceChooserParameter extends TextButtonParameter {
     }
 
     public String getResourcePath(){
-        return SkinEditorManager.get(this).Resources.getResourcePath();
+        return SkinEditorManager.Resources.getResourcePath(SkinEditorManager.getByParameterContext(this));
     }
 
     public String getFilePath(){
@@ -47,7 +50,9 @@ public class ResourceChooserParameter extends TextButtonParameter {
 
     public boolean haveErrors() {
         try {
-            String path = getSkinEditor().Resources.getResourcePath() + "/" + getFilePath();
+            SimpleXmlParameterEditor editor = SimpleXmlParameterEditorManager.getByParameterContext(this);
+
+            String path = SkinEditorManager.Resources.getResourcePath(editor) + "/" + getFilePath();
             VirtualFile file = Tools.getVirtualFile(path);
             return file == null;
         }catch (Exception ex){
