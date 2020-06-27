@@ -202,4 +202,24 @@ public abstract class FileCellRenderer<T> extends JPanel implements ListCellRend
                 ((JLabel) component).setIcon(icon);
     }
 
+    public JLabel getIcon(String name){
+        for(Component component : left_panel.getComponents())
+            if(component instanceof JLabel && component.getName().equals(name))
+                return (JLabel) component;
+        for(Component component : right_panel.getComponents())
+            if(component instanceof JLabel && component.getName().equals(name))
+                return (JLabel) component;
+        return null;
+    }
+
+    public JLabel getLabel(String name){
+        for(Component component : left_panel.getComponents())
+            if(component instanceof JLabel && component.getName().equals(name))
+                return (JLabel) component;
+        for(Component component : right_panel.getComponents())
+            if(component instanceof JLabel && component.getName().equals(name))
+                return (JLabel) component;
+        return null;
+    }
+
 }

@@ -118,6 +118,14 @@ public class Tools {
         ).toArray(new VirtualFile[0]);
     }
 
+    public static VirtualFile[] getFilesByFileTypeInProject(Project project, FileType fileType){
+        return FileBasedIndex.getInstance().getContainingFiles(
+                FileTypeIndex.NAME,
+                fileType,
+                GlobalSearchScope.projectScope(project)
+        ).toArray(new VirtualFile[0]);
+    }
+
     public static PsiDirectory getSelectedDirectory(AnActionEvent event){
         return LangDataKeys.IDE_VIEW.getData(event.getDataContext()).getOrChooseDirectory();
     }

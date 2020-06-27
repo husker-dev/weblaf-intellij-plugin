@@ -40,7 +40,7 @@ public class IncludeListCellRenderer extends FileCellRenderer<IncludeElement> {
         if(getElement().getNearClass() != null || getElement().getFullPath().contains(".jar")) {
             PsiClass psiClass;
             if (getElement().getNearClass() == null)
-                psiClass = SkinEditorManager.Resources.getPsiClass(((IncludeList) getList()).getSkinEditor());
+                psiClass = SkinEditorManager.Resources.getResourcePsiClass(((IncludeList) getList()).getSkinEditor());
             else
                 psiClass = Tools.getClassByPath(((IncludeList) getList()).getSkinEditor().getProject(), getElement().getNearClass());
             return Tools.getModuleIcon(psiClass);

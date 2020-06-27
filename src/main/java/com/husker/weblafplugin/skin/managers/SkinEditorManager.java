@@ -13,7 +13,6 @@ import com.intellij.psi.impl.source.tree.java.PsiExpressionStatementImpl;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class SkinEditorManager {
 
@@ -30,12 +29,15 @@ public class SkinEditorManager {
 
     public static class Resources {
         public static String getClassPath(SimpleXmlParameterEditor editor){
-            return getPsiClass(editor).getQualifiedName();
+            return getResourcePsiClass(editor).getQualifiedName();
         }
 
-        public static PsiClass getPsiClass(SimpleXmlParameterEditor editor){
+        public static PsiClass getResourcePsiClass(SimpleXmlParameterEditor editor){
+            return getResourcePsiClass(SkinEditorManager.getPsiClass(editor));
+        }
+
+        public static PsiClass getResourcePsiClass(PsiClass clazz){
             try {
-                PsiClass clazz = SkinEditorManager.getPsiClass(editor);
                 if(clazz == null)
                     return null;
 
@@ -61,7 +63,7 @@ public class SkinEditorManager {
                     PsiTypeElement class_resource_class_type = (PsiTypeElement) class_resource_class_expression.findChildByRole(ChildRole.TYPE);
                     PsiJavaCodeReferenceElementImpl class_resource_class_reference = (PsiJavaCodeReferenceElementImpl) class_resource_class_type.getChildren()[0];
 
-                    return Tools.getClassByPath(editor.getProject(), class_resource_class_reference.getCanonicalText());
+                    return Tools.getClassByPath(clazz.getProject(), class_resource_class_reference.getCanonicalText());
                 }
                 return null;
             }catch (Exception ex){
@@ -71,7 +73,7 @@ public class SkinEditorManager {
         }
 
         public static String getResourcePath(SimpleXmlParameterEditor editor){
-            return Tools.getClassResourcePath(getPsiClass(editor));
+            return Tools.getClassResourcePath(getResourcePsiClass(editor));
         }
     }
 

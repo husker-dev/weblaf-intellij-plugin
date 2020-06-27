@@ -94,6 +94,10 @@ public abstract class FileList<T> extends JBList<T> {
     }
 
     public Object getCached(String tag, T element){
+        if(!cached.containsKey(tag))
+            return null;
+        if(!cached.get(tag).containsKey(element))
+            return null;
         return cached.get(tag).get(element);
     }
 
