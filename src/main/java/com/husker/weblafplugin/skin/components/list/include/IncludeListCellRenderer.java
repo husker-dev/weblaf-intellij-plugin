@@ -36,7 +36,7 @@ public class IncludeListCellRenderer extends FileCellRenderer<IncludeElement> {
         return getElement().getFullPath();
     }
 
-    private Icon getModuleIcon(){
+    public Icon getModuleIcon(){
         if(getElement().getNearClass() != null || getElement().getFullPath().contains(".jar")) {
             PsiClass psiClass;
             if (getElement().getNearClass() == null)
@@ -47,6 +47,5 @@ public class IncludeListCellRenderer extends FileCellRenderer<IncludeElement> {
         }
         return null;
     }
-
 
 }

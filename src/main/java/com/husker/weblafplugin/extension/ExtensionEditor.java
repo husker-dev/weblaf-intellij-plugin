@@ -5,6 +5,7 @@ import com.alee.managers.style.XmlSkin;
 import com.husker.weblafplugin.core.WLF_TypeChecker;
 import com.husker.weblafplugin.core.editor.SimpleXmlParameterEditor;
 import com.husker.weblafplugin.core.managers.ParameterManager;
+import com.husker.weblafplugin.core.tools.ImageUtils;
 import com.husker.weblafplugin.core.tools.Tools;
 import com.husker.weblafplugin.skin.components.IconViewer;
 import com.husker.weblafplugin.skin.components.parameter.Parameter;
@@ -60,23 +61,14 @@ public class ExtensionEditor extends SimpleXmlParameterEditor {
                     add(p_class);
                     add(p_author);
                 }}, BorderLayout.WEST);
-                add(new JLabel(WebLookAndFeel.getIcon(128)){{
-                    Image icon = WebLookAndFeel.getIcon(128).getImage();
-                    BufferedImage buffered = new BufferedImage(icon.getWidth(null), icon.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-                    buffered.getGraphics().drawImage(icon, 0, 0 , null);
-
-                    setIcon(new ImageIcon(buffered.getScaledInstance(IMAGE_SIZE, IMAGE_SIZE, Image.SCALE_SMOOTH)));
-
+                add(new JLabel(){{
+                    setIcon(ImageUtils.scale(WebLookAndFeel.getIcon(128), IMAGE_SIZE, IMAGE_SIZE));
                     setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
                 }});
             }});
 
             add(p_extends);
         }});
-
-
-
-
 
         add(new ParameterBlock("Resources"){{
             add(p_include);

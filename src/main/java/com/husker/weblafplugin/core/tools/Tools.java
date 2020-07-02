@@ -222,21 +222,20 @@ public class Tools {
         return new File(class_path).getParent().replace("\\", "/");
     }
 
-    public static Icon getModuleIcon(PsiClass psiClass){
-        if(psiClass != null) {
-            ProjectFileIndex fileIndex = ProjectRootManager.getInstance(psiClass.getProject()).getFileIndex();
-            VirtualFile vFile = PsiUtilCore.getVirtualFile(psiClass);
+    public static Icon getModuleIcon(PsiElement psiElement){
+        if(psiElement != null) {
+            ProjectFileIndex fileIndex = ProjectRootManager.getInstance(psiElement.getProject()).getFileIndex();
+            VirtualFile vFile = PsiUtilCore.getVirtualFile(psiElement);
             if (vFile != null && fileIndex.isInLibrary(vFile)) {
                 return AllIcons.Nodes.PpLibFolder;
             } else {
-                Module module = ModuleUtilCore.findModuleForPsiElement(psiClass);
+                Module module = ModuleUtilCore.findModuleForPsiElement(psiElement);
                 if (module != null)
                     return ModuleType.get(module).getIcon();
                 else
                     return null;
             }
         }
-
         return null;
     }
 

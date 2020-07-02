@@ -1,5 +1,12 @@
 package com.husker.weblafplugin.core.components.list;
 
+import com.husker.weblafplugin.core.tools.Tools;
+import com.husker.weblafplugin.skin.components.list.include.IncludeList;
+import com.husker.weblafplugin.skin.managers.SkinEditorManager;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.project.ProjectManager;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElement;
 import com.intellij.ui.JBColor;
 import com.intellij.util.ui.UIUtil;
 
@@ -18,6 +25,7 @@ public abstract class FileCellRenderer<T> extends JPanel implements ListCellRend
     private T element;
     private int index;
     private boolean selected, focused;
+    private int indent = 4;
 
     private ArrayList<JLabel> firstBg = new ArrayList<>();
     private ArrayList<JLabel> secondBg = new ArrayList<>();
@@ -28,7 +36,6 @@ public abstract class FileCellRenderer<T> extends JPanel implements ListCellRend
     public static JBColor getLibraryBackgroundColor(){
         return LibraryFileColor;
     }
-
     public static JBColor getErrorColor(){
         return ErrorColor;
     }
@@ -38,22 +45,33 @@ public abstract class FileCellRenderer<T> extends JPanel implements ListCellRend
         setPreferredSize(new Dimension(0, 20));
 
         add(left_panel = new JPanel(){{
-            setLayout(new FlowLayout(LEFT, 0, 0));
+            setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
             setOpaque(false);
         }}, BorderLayout.WEST);
         add(right_panel = new JPanel(){{
+            setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
             setOpaque(false);
-            setLayout(new FlowLayout(RIGHT, 0, 0));
         }}, BorderLayout.EAST);
 
         initComponents();
     }
 
     public void addToLeft(Component component){
+        // separator
+        left_panel.add(new JPanel() {{
+            setOpaque(false);
+            setPreferredSize(new Dimension(indent, 0));
+            setBorder(BorderFactory.createEmptyBorder());
+        }});
         left_panel.add(component);
     }
     public void addToRight(Component component){
-        right_panel.add(component);
+        right_panel.add(new JPanel() {{
+            setOpaque(false);
+            setPreferredSize(new Dimension(indent, 0));
+            setBorder(BorderFactory.createEmptyBorder());
+        }}, 0);
+        right_panel.add(component, 0);
     }
 
     public Component getListCellRendererComponent(JList<? extends T> list, T element, int index, boolean selected, boolean focused) {
@@ -72,7 +90,11 @@ public abstract class FileCellRenderer<T> extends JPanel implements ListCellRend
         for(JLabel label : secondBg)
             label.setForeground(getSecondColor());
 
-        updateContent();
+        try {
+            updateContent();
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
         return this;
     }
 
@@ -171,7 +193,7 @@ public abstract class FileCellRenderer<T> extends JPanel implements ListCellRend
             setName(name);
             setVerticalAlignment(CENTER);
             setHorizontalAlignment(CENTER);
-            setPreferredSize(new Dimension(24, 20));
+            setPreferredSize(new Dimension(16, 16));
         }});
     }
 
@@ -180,7 +202,7 @@ public abstract class FileCellRenderer<T> extends JPanel implements ListCellRend
             setName(name);
             setVerticalAlignment(CENTER);
             setHorizontalAlignment(CENTER);
-            setPreferredSize(new Dimension(24, 20));
+            setPreferredSize(new Dimension(16, 16));
         }});
     }
 

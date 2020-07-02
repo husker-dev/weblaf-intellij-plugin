@@ -64,14 +64,6 @@ public abstract class FileList<T> extends JBList<T> {
     public void setContent(T[] listData) {
         content = listData;
 
-        /*
-        if(duplicates(listData)) {
-            getModel().replaceAll(Collections.emptyList());
-            return;
-        }
-
-         */
-
         clearCache();
         updateCachedData();
 
@@ -102,13 +94,6 @@ public abstract class FileList<T> extends JBList<T> {
     }
 
     public boolean testForError() {
-        /*
-        if(duplicates(content)) {
-            getModel().replaceAll(Collections.emptyList());
-            return true;
-        }
-
-         */
         clearCache();
         updateCachedData();
 
@@ -117,21 +102,6 @@ public abstract class FileList<T> extends JBList<T> {
                 return true;
         return false;
     }
-
-    /*
-    private boolean duplicates(final T[] elements) {
-        if(elements == null)
-            return false;
-        Set<T> lump = new HashSet<>();
-        for (T i : elements) {
-            if (lump.contains(i))
-                return true;
-            lump.add(i);
-        }
-        return false;
-    }
-
-     */
 
     public CollectionListModel<T> getModel(){
         return (CollectionListModel<T>) super.getModel();
