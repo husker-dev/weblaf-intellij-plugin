@@ -56,21 +56,26 @@ public abstract class FileCellRenderer<T> extends JPanel implements ListCellRend
         initComponents();
     }
 
-    public void addToLeft(Component component){
-        // separator
+    public void addSpacing(){
         left_panel.add(new JPanel() {{
             setOpaque(false);
             setPreferredSize(new Dimension(indent, 0));
             setBorder(BorderFactory.createEmptyBorder());
         }});
-        left_panel.add(component);
     }
-    public void addToRight(Component component){
+
+    public void addSpacingToRight(){
         right_panel.add(new JPanel() {{
             setOpaque(false);
             setPreferredSize(new Dimension(indent, 0));
             setBorder(BorderFactory.createEmptyBorder());
         }}, 0);
+    }
+
+    public void addToLeft(Component component){
+        left_panel.add(component);
+    }
+    public void addToRight(Component component){
         right_panel.add(component, 0);
     }
 
@@ -157,10 +162,16 @@ public abstract class FileCellRenderer<T> extends JPanel implements ListCellRend
     }
 
     public void addLabel(String name){
-        addLabel(name, true);
+        addLabel(name, true, true);
     }
 
     public void addLabel(String name, boolean main){
+        addLabel(name, main, true);
+    }
+
+    public void addLabel(String name, boolean main, boolean spacing){
+        if(spacing)
+            addSpacing();
         addToLeft(new JLabel(){{
             setName(name);
             setVerticalTextPosition(CENTER);
@@ -173,10 +184,16 @@ public abstract class FileCellRenderer<T> extends JPanel implements ListCellRend
     }
 
     public void addLabelToRight(String name){
-        addLabelToRight(name, true);
+        addLabelToRight(name, true, true);
     }
 
     public void addLabelToRight(String name, boolean main){
+        addLabelToRight(name, main, true);
+    }
+
+    public void addLabelToRight(String name, boolean main, boolean spacing){
+        if(spacing)
+            addSpacingToRight();
         addToRight(new JLabel(){{
             setName(name);
             setVerticalTextPosition(CENTER);
@@ -189,6 +206,12 @@ public abstract class FileCellRenderer<T> extends JPanel implements ListCellRend
     }
 
     public void addIcon(String name){
+        addIcon(name, true);
+    }
+
+    public void addIcon(String name, boolean spacing){
+        if(spacing)
+            addSpacing();
         addToLeft(new JLabel(){{
             setName(name);
             setVerticalAlignment(CENTER);
@@ -198,6 +221,12 @@ public abstract class FileCellRenderer<T> extends JPanel implements ListCellRend
     }
 
     public void addIconToRight(String name){
+        addIconToRight(name, true);
+    }
+
+    public void addIconToRight(String name, boolean spacing){
+        if(spacing)
+            addSpacingToRight();
         addToRight(new JLabel(){{
             setName(name);
             setVerticalAlignment(CENTER);

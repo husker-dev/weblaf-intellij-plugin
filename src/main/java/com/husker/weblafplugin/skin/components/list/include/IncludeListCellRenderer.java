@@ -13,10 +13,11 @@ public class IncludeListCellRenderer extends FileCellRenderer<IncludeElement> {
     public void initComponents(){
         addIcon("icon");
         addLabel("folder", false);
-        addLabel("name");
-        addLabel("extension", false);
-        addLabelToRight("nearClass", false);
+        addLabel("name", true, false);
+        addLabel("extension", false, false);
+
         addIconToRight("module");
+        addLabelToRight("nearClass", false);
     }
     public void updateContent() {
         setIcon("icon", ((IncludeList)getList()).getIcon(getElement()));
