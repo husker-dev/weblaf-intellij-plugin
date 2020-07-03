@@ -12,7 +12,7 @@ public class IncludeList extends FileList<IncludeElement> {
     private final SimpleXmlParameterEditor editor;
 
     public IncludeList(SimpleXmlParameterEditor editor) {
-        super();
+        super(editor.getProject());
         this.editor = editor;
         setCellRenderer(new IncludeListCellRenderer());
         setDragEnabled(true);

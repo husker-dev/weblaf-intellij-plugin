@@ -17,25 +17,25 @@ import org.jdom.Element;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.event.MouseEvent;
 import java.util.Scanner;
 
 public class ExtendsList extends FileList<String> {
 
     private final SimpleXmlParameterEditor editor;
-    private final Project project;
 
     public ExtendsList(SimpleXmlParameterEditor editor) {
-        super();
+        super(editor.getProject());
         this.editor = editor;
-        this.project = editor.getProject();
         setCellRenderer(new ExtendsListRenderer());
         setDragEnabled(true);
 
-
-    }
-
-    public Project getProject(){
-        return project;
+        new DoubleClickListener(){
+            protected boolean onDoubleClick(MouseEvent event) {
+                Tools.openFile(getProject(), Tools.getVirtualFile((String) getCached("path", getSelectedValue())));
+                return true;
+            }
+        }.installOn(this);
     }
 
     protected void updateCachedData(){

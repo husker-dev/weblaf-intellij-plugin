@@ -143,7 +143,7 @@ public class Tools {
                 // Open
                 for (PsiFile psi_file : directory.getFiles()) {
                     if (psi_file.getName().equals(file.getName())) {
-                        FileEditorManager.getInstance(event.getProject()).openFile(psi_file.getVirtualFile(), true);
+                        openFile(event.getProject(), psi_file.getVirtualFile());
                         break;
                     }
                 }
@@ -151,6 +151,10 @@ public class Tools {
                 ex.printStackTrace();
             }
         });
+    }
+
+    public static void openFile(Project project, VirtualFile file){
+        FileEditorManager.getInstance(project).openFile(file, true);
     }
 
     public static PsiFile getPsi(Project project, VirtualFile file){

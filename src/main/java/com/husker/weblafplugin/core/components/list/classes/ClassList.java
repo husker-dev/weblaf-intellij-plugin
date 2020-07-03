@@ -8,18 +8,15 @@ import com.intellij.psi.PsiClass;
 
 public class ClassList extends FileList<String> {
 
-    private Project project;
-
     public ClassList(Project project){
-        super();
-        this.project = project;
+        super(project);
         setCellRenderer(new ClassListCellRenderer());
         setDragEnabled(true);
     }
 
     protected void updateCachedData() {
         for(String classPath : getContent()) {
-            PsiClass clazz = Tools.getClassByPath(project, classPath);
+            PsiClass clazz = Tools.getClassByPath(getProject(), classPath);
             cache("psiClasses", classPath, clazz);
             cache("error", classPath, clazz == null);
         }
