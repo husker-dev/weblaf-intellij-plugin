@@ -29,6 +29,7 @@ public class ExtendsList extends FileList<String> {
         this.editor = editor;
         setCellRenderer(new ExtendsListRenderer());
         setDragEnabled(true);
+        setAutoClearCacheEnabled(false);
 
         new DoubleClickListener(){
             protected boolean onDoubleClick(MouseEvent event) {
@@ -58,24 +59,26 @@ public class ExtendsList extends FileList<String> {
                         Element root = XmlTools.getElement(builder.toString());
                         if(root.getNamespace().getURI().equals("http://weblookandfeel.com/XmlSkin")){
                             if( root.getChild("id", root.getNamespace()) == null ||
-                                    root.getChild("icon", root.getNamespace()) == null ||
                                     root.getChild("class", root.getNamespace()) == null ||
                                     root.getChild("title", root.getNamespace()) == null ||
                                     root.getChild("id", root.getNamespace()).getText() == null ||
-                                    root.getChild("icon", root.getNamespace()).getText() == null ||
                                     root.getChild("class", root.getNamespace()).getText() == null ||
                                     root.getChild("title", root.getNamespace()).getText() == null)
                                 continue;
 
                             String id = root.getChild("id", root.getNamespace()).getText();
-                            String icon = root.getChild("icon", root.getNamespace()).getText();
                             String clazz = root.getChild("class", root.getNamespace()).getText();
                             String title = root.getChild("title", root.getNamespace()).getText();
+                            String icon;
+                            if(root.getChild("icon", root.getNamespace()) != null)
+                                icon = root.getChild("icon", root.getNamespace()).getText();
+                            else
+                                icon = null;
 
 
                             String author;
                             if( root.getChild("author", root.getNamespace()) == null ||
-                                    root.getChild("author", root.getNamespace()).getText() == null)
+                                root.getChild("author", root.getNamespace()).getText() == null)
                                 author = null;
                             else
                                 author = root.getChild("author", root.getNamespace()).getText();
@@ -89,14 +92,16 @@ public class ExtendsList extends FileList<String> {
                                     if(resourcePsiClass == null || resourcePsiClass.getContainingFile() == null)
                                         continue;
 
-                                    String filePath = resourcePsiClass.getContainingFile().getVirtualFile().getParent().getPath() + "/" + icon;
-                                    VirtualFile iconFile = Tools.getVirtualFile(filePath);
+                                    if(icon != null) {
+                                        String filePath = resourcePsiClass.getContainingFile().getVirtualFile().getParent().getPath() + "/" + icon;
+                                        VirtualFile iconFile = Tools.getVirtualFile(filePath);
 
-                                    if (iconFile == null || iconFile.getInputStream() == null)
-                                        continue;
+                                        if (iconFile == null || iconFile.getInputStream() == null)
+                                            continue;
+                                        cache("icon", element_id, new ImageIcon(ImageUtils.scale(ImageIO.read(iconFile.getInputStream()), 16, 16)));
+                                    }else
+                                        cache("icon", element_id, null);
 
-
-                                    cache("icon", element_id, new ImageIcon(ImageUtils.scale(ImageIO.read(iconFile.getInputStream()), 16, 16)));
                                     cache("title", element_id, title);
                                     cache("author", element_id, author);
                                     cache("exist", element_id, true);
@@ -107,7 +112,7 @@ public class ExtendsList extends FileList<String> {
 
 
                     }catch (Exception ex){
-                        //ex.printStackTrace();
+                        ex.printStackTrace();
                         System.out.println(builder.toString());
                     }
                 }

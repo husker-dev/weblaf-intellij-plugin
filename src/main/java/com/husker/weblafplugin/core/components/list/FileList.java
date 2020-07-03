@@ -6,7 +6,6 @@ import com.intellij.ui.CollectionListModel;
 import com.intellij.ui.DoubleClickListener;
 import com.intellij.ui.ExpandedItemListCellRendererWrapper;
 import com.intellij.ui.components.JBList;
-import javafx.scene.control.ListCell;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
@@ -23,9 +22,10 @@ public abstract class FileList<T> extends JBList<T> {
     private Project project;
 
     private boolean doubleClickEnable = true;
+    private boolean autoClearCache = true;
 
     public FileList(Project project) {
-        super(getListModel());
+        super(createListModel());
         init(project);
     }
 
@@ -43,6 +43,8 @@ public abstract class FileList<T> extends JBList<T> {
         });
         new DoubleClickListener(){
             protected boolean onDoubleClick(MouseEvent event) {
+                if(getSelectedValue() == null)
+                    return false;
                 if(doubleClickEnable)
                     Tools.openFile(project, Tools.getVirtualFile(getCellRendererForElement(getSelectedValue()).getFilePath()));
                 return doubleClickEnable;
@@ -50,7 +52,15 @@ public abstract class FileList<T> extends JBList<T> {
         }.installOn(this);
     }
 
-    private static <T> CollectionListModel<T> getListModel(){
+    public void setDoubleClickEnabled(boolean enabled){
+        doubleClickEnable = enabled;
+    }
+
+    public void setAutoClearCacheEnabled(boolean enabled){
+        autoClearCache = enabled;
+    }
+
+    private static <T> CollectionListModel<T> createListModel(){
         return new CollectionListModel<T>(){
             public void exchangeRows(int oldIndex, int newIndex) {
                 T elementToMove = getElementAt(oldIndex);
@@ -64,7 +74,7 @@ public abstract class FileList<T> extends JBList<T> {
     }
 
     private FileCellRenderer<T> getCellRendererForElement(T element){
-        getFileCellRenderer().getListCellRendererComponent(this, element, getListModel().getElementIndex(element), true, true);
+        getFileCellRenderer().getListCellRendererComponent(this, element, createListModel().getElementIndex(element), true, true);
         return getFileCellRenderer();
     }
 
@@ -90,7 +100,10 @@ public abstract class FileList<T> extends JBList<T> {
     public void setContent(T[] listData) {
         content = listData;
 
-        clearCache();
+        if(autoClearCache)
+            clearCache();
+        else
+            clearCachePartially(listData);
         updateCachedData();
 
         getModel().replaceAll(Arrays.asList(listData));
@@ -111,6 +124,20 @@ public abstract class FileList<T> extends JBList<T> {
         cached.clear();
     }
 
+    public void clearCachePartially(List<T> elements){
+        cached.entrySet().iterator().forEachRemaining(tagEntry -> {
+            Iterator<Map.Entry<T, Object>> valueIterator = tagEntry.getValue().entrySet().iterator();
+            valueIterator.forEachRemaining(valueEntry -> {
+                if(!elements.contains(valueEntry.getKey()))
+                    valueIterator.remove();
+            });
+        });
+    }
+
+    public void clearCachePartially(T[] elements){
+        clearCachePartially(Arrays.asList(elements));
+    }
+
     public Object getCached(String tag, T element){
         if(!cached.containsKey(tag))
             return null;
@@ -120,7 +147,10 @@ public abstract class FileList<T> extends JBList<T> {
     }
 
     public boolean testForError() {
-        clearCache();
+        if(autoClearCache)
+            clearCache();
+        else
+            clearCachePartially(getModel().getItems());
         updateCachedData();
 
         for(T element : content)
