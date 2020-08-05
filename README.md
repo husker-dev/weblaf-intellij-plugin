@@ -17,7 +17,7 @@ You can check [official instruction](https://www.jetbrains.com/help/idea/managin
 
   You can add a plugin just using a plugin file
   
-  * [Download](https://github.com/husker-dev/weblaf-intellij-plugin/releases/download/1.1/WebLaF.Plugin-1.1.zip) latest ```Zip``` plugin file
+  * [Download](https://github.com/husker-dev/weblaf-intellij-plugin/releases/download/1.1.1/WebLaF.Plugin-1.1.1.zip) latest ```Zip``` plugin file
   * Go to ```File -> Settings -> Plugins```
   * Press ```Settings (gear)``` button and select ```Install Plugin from Disk```
   * Find and select ```Zip``` file
